@@ -132,7 +132,8 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         <div class="tab" data-tab="interview">Interview Q&A</div>
         <div class="tab" data-tab="applications">Applications</div>
         <div class="tab" data-tab="letters">Cover Letters</div>
-        <div class="tab" data-tab="generator">Generator</div>
+        <div class="tab" data-tab="generator">Letter Gen</div>
+        <div class="tab" data-tab="cvgen">CV Gen</div>
         <div class="tab" data-tab="books">Books</div>
         <div class="tab" data-tab="writing">Writing</div>
     </div>
@@ -264,6 +265,22 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         %(books)s
     </div>
     
+    <div id="cvgen" class="content">
+        <h2>📄 CV Generator</h2>
+        <div class="card generator">
+            <input type="text" id="cv-role" placeholder="Target role (e.g. Localisation Producer)">
+            <input type="text" id="cv-company" placeholder="Company name (optional)">
+            <select id="cv-type">
+                <option value="localisation">Localisation & Project Management</option>
+                <option value="language">Product Language Manager</option>
+                <option value="product">Product Manager</option>
+            </select>
+            <button class="btn" onclick="generateCV()">Generate CV</button>
+            <button class="btn" onclick="copyCV()" style="background:#ffd700; margin-left:10px;">Copy</button>
+            <div id="generated-cv" style="background: #111; padding: 15px; border-radius: 8px; white-space: pre-wrap; font-size: 0.8em; line-height: 1.4; margin-top: 15px; max-height: 500px; overflow-y: auto;"></div>
+        </div>
+    </div>
+    
     <div id="writing" class="content">
         <h2>✍️ Writing Samples</h2>
         <div class="card">
@@ -304,7 +321,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 Neu-Eichenberg, Germany
 csiboto@gmail.com
 +49 176 8787 3255
-linkedin.com/in/charlessiboto-2a9a773b
+linkedin.com/in/charlessiboto
 
 ${date}
 
@@ -338,6 +355,137 @@ Charles Siboto`;
             const el = document.getElementById('letter-' + id);
             if (el) {
                 navigator.clipboard.writeText(el.textContent).then(() => alert('Copied!'));
+            }
+        }
+        
+        function generateCV() {
+            const role = document.getElementById('cv-role').value || 'Project Manager';
+            const company = document.getElementById('cv-company').value;
+            const cvType = document.getElementById('cv-type').value;
+            
+            const summaries = {
+                localisation: `Project management and localisation professional with over ten years of experience delivering complex publishing projects on time, within budget and to the highest quality standards. Proven expertise in coordinating cross-functional teams, managing international co-productions, and ensuring editorial excellence across multiple languages. Adept at stakeholder negotiation, risk management and quality assurance. Recently certified in Agile Scrum methodology with practical AI/ML knowledge.`,
+                language: `Linguistic and editorial professional with over ten years of experience in publishing, translation oversight and quality frameworks, combining deep expertise in language craft with practical knowledge of AI and machine learning technologies. Skilled in developing style guides, maintaining editorial standards, and ensuring cultural resonance across DACH markets. Bilingual in English (native) and German (advanced), with seven years living and working in Germany.`,
+                product: `Product management professional with over ten years of experience in publishing and digital content strategy. Expert in identifying market trends, executing innovative content strategies, and delivering user-focused digital products. Proven track record of increasing engagement by 25%% through data-driven decisions. Recently trained in AI/ML technologies and Agile methodologies.`
+            };
+            
+            const skillSets = {
+                localisation: `PROJECT MANAGEMENT: Planning & Scheduling, Budget Control, Quality Assurance, Risk Management, Agile Scrum, Stakeholder Negotiation
+LOCALISATION: Translation Oversight, International Co-production, Cultural Adaptation, Multi-language Coordination, Editorial QC
+TECHNICAL: Python, Git, Data Visualization, MS Office, WordPress, CMS Platforms
+LANGUAGES: English (Native), German (Advanced - daily professional use since 2018)`,
+                language: `LINGUISTIC: Style Guide Development, Editorial Standards, Translation QA, Cultural Adaptation, Tone & Voice Consistency
+TECHNICAL: Python, ML Pipeline Development, Data Manipulation, PySpark, Git, Bash
+PROJECT: Agile Scrum, Cross-functional Collaboration, Stakeholder Management, Quality Frameworks
+LANGUAGES: English (Native), German (Advanced - daily professional use since 2018)`,
+                product: `PRODUCT: Roadmap Development, User Research, A/B Testing, Data Analysis, Market Research, Feature Prioritisation
+TECHNICAL: Python, Data Visualization, Agile Scrum, Git, CMS Platforms, Analytics Tools
+LEADERSHIP: Cross-functional Team Coordination, Stakeholder Management, Strategic Planning
+LANGUAGES: English (Native), German (Advanced - daily professional use since 2018)`
+            };
+            
+            const headlines = {
+                localisation: 'LOCALISATION & PROJECT MANAGEMENT PROFESSIONAL',
+                language: 'PRODUCT LANGUAGE MANAGER',
+                product: 'PRODUCT MANAGER'
+            };
+            
+            const targetLine = company ? `Target: ${role} at ${company}` : `Target: ${role}`;
+            
+            const cv = `CHARLES SIBOTO
+${headlines[cvType]}
+
+Neu-Eichenberg, Germany | csiboto@gmail.com | +49 176 8787 3255
+LinkedIn: linkedin.com/in/charlessiboto | Portfolio: charless-digital-canvas.lovable.app
+
+${targetLine}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PROFESSIONAL SUMMARY
+
+${summaries[cvType]}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SKILLS
+
+${skillSets[cvType]}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PROFESSIONAL EXPERIENCE
+
+ENGLISH EDUCATOR | ASC Göttingen von 1846 e.V.
+Göttingen, Germany | Nov 2025 - Present
+• Conducting English courses and workshops for colleagues
+• Managing lesson planning and resource coordination
+• Facilitating activities in aftercare program
+
+CONTRIBUTING WRITER | Bizcommunity.com
+Cape Town, South Africa | May 2012 - Mar 2025
+• Authored entertainment coverage and game reviews for 12+ years
+• Grew readership by 35%% through culturally relevant content
+• Led #YouthMonth and #BizTrends campaigns
+
+ONLINE EDITOR | Software & Support Media
+Frankfurt, Germany | Jan 2024 - Jun 2024
+• Managed content production across web platforms
+• Coordinated workshops and online events
+• Developed content strategies aligned with marketing campaigns
+
+EDITOR & PROJECT MANAGER | Jonathan Ball Publishers
+Cape Town, South Africa | Oct 2021 - Oct 2022
+• Managed 20+ book titles annually through complete lifecycle
+• Coordinated cross-functional teams (editors, designers, production)
+• Spearheaded e-book commissioning and digital asset management
+
+JUNIOR EDITOR | NB Publishers
+Cape Town, South Africa | Jun 2013 - Jun 2017
+• Managed digital publishing, releasing 20+ EPUB/MOBI titles annually
+• Oversaw translation and co-production projects with international publishers
+• Delivered projects under tight deadlines while maintaining quality
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EDUCATION & CERTIFICATIONS
+
+AI PROJECT MANAGEMENT | neuefische GmbH / SPICED Academy, Berlin
+Jun 2025 - Nov 2025
+Focus: AI/ML, Python, Agile Scrum, Data Visualization
+
+BA LANGUAGE PRACTICE | University of Johannesburg
+2006 - 2010
+Focus: English Literature, Linguistics, Latin
+
+ADVANCED COPY EDITING & PROOFREADING | McGillivray Linnegar Associates
+2015
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PUBLICATIONS
+
+• The Legend of Mamlambo (Penguin Random House SA, 2024)
+• The Blacksmith and the Dragonfly - Kwasuka Sukela series (PRH SA, 2025)
+• The Princess and the Sangoma - Kwasuka Sukela series (PRH SA, 2025)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+GAMING BACKGROUND
+
+Lifelong Nintendo enthusiast since the Game Boy era. First game: The Legend of Zelda: Link's Awakening. Favourite franchises: Zelda, Metroid, Fire Emblem. Passionate about gaming as a storytelling medium and cultural force.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
+            
+            document.getElementById('generated-cv').textContent = cv;
+        }
+        
+        function copyCV() {
+            const cv = document.getElementById('generated-cv').textContent;
+            if (cv) {
+                navigator.clipboard.writeText(cv).then(() => alert('CV copied to clipboard!'));
             }
         }
         
