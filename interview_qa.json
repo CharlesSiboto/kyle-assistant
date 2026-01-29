@@ -1,0 +1,113 @@
+[
+  {
+    "id": 1,
+    "question": "Tell me about yourself.",
+    "answer": "I'm an editor, writer, and project manager with over ten years of experience spanning publishing, digital media, and education. I started my career at NB Publishers in Cape Town, where I managed digital publishing and international co-productions. At Jonathan Ball Publishers, I took on full project management responsibility for 20+ book titles annually. I've also been a contributing writer for Bizcommunity for over 12 years, covering entertainment and gaming. Since moving to Germany in 2018, I've worked in education and recently completed an AI Project Management bootcamp at neuefische. I'm also a published children's author with Penguin Random House South Africa—my Kwasuka Sukela series brings African folklore to young readers.",
+    "tags": ["intro", "background", "experience"]
+  },
+  {
+    "id": 2,
+    "question": "Why are you interested in this role/company?",
+    "answer": "I'm genuinely passionate about [company's mission/product]. What draws me specifically is [specific aspect]. My background in publishing and content management has given me skills directly applicable here, and I see this as an opportunity to combine my editorial expertise with my interest in [relevant area]. I've followed [company's] work in [specific area] and I'm excited about contributing to that vision.",
+    "tags": ["motivation", "company_research"],
+    "note": "Customize with specific company research"
+  },
+  {
+    "id": 3,
+    "question": "What's your greatest strength?",
+    "answer": "My greatest strength is my ability to manage complex projects while maintaining attention to detail. At Jonathan Ball Publishers, I coordinated 20+ book projects annually, each with multiple stakeholders—authors, designers, printers, marketing teams. I developed systems to track progress, anticipate bottlenecks, and ensure nothing fell through the cracks. This combination of big-picture project management with editorial precision has served me well across all my roles.",
+    "tags": ["strengths", "project_management"]
+  },
+  {
+    "id": 4,
+    "question": "What's your greatest weakness?",
+    "answer": "I sometimes take on too much because I genuinely enjoy being helpful and solving problems. I've learned to manage this by being more realistic about timelines upfront and building buffer time into my project plans. At Software & Support Media, I started using time-blocking techniques and learned to have honest conversations about capacity before committing to deadlines.",
+    "tags": ["weaknesses", "self_awareness"]
+  },
+  {
+    "id": 5,
+    "question": "Tell me about a challenging project you managed.",
+    "answer": "At Jonathan Ball Publishers, I inherited a book project that was behind schedule with a fixed print date. The manuscript needed substantial editing, the author was difficult to reach, and our designer was overcommitted. I broke the project into daily milestones, negotiated with the designer for dedicated time slots, and established a structured communication schedule with the author. I also identified which editorial changes were essential versus nice-to-have. We delivered on time, and the author specifically thanked me for bringing order to what they called 'chaos.'",
+    "tags": ["challenge", "project_management", "problem_solving"]
+  },
+  {
+    "id": 6,
+    "question": "How do you handle tight deadlines?",
+    "answer": "I prioritise ruthlessly and communicate proactively. When facing a tight deadline, I first identify the critical path—what absolutely must happen and in what order. Then I look for tasks that can be parallelised or delegated. Most importantly, I flag risks early. At NB Publishers, we often had tight turnarounds for co-production projects with international partners. I learned that the worst thing you can do is stay silent when something might slip. Early communication gives everyone options; last-minute surprises create crises.",
+    "tags": ["deadlines", "time_management", "communication"]
+  },
+  {
+    "id": 7,
+    "question": "Describe your experience with cross-functional teams.",
+    "answer": "Cross-functional collaboration has been central to every role I've held. In publishing, I worked daily with editorial, design, production, marketing, and sales teams. Each has different priorities and languages. I learned to translate between them—helping designers understand editorial constraints, helping marketing understand production timelines. At ASC Göttingen, I coordinated between the sports club administration and educational staff. The key is understanding what each stakeholder values and framing requests in those terms.",
+    "tags": ["teamwork", "collaboration", "communication"]
+  },
+  {
+    "id": 8,
+    "question": "How do you handle feedback or criticism?",
+    "answer": "I try to receive feedback with curiosity rather than defensiveness. When someone criticises my work, my first instinct now is to ask questions: 'Can you tell me more about what isn't working?' or 'What would better look like?' This approach has served me well in editorial work, where feedback is constant. As a writer myself, I understand how personal creative work can feel, so I try to give feedback the same way I'd want to receive it—specific, constructive, and focused on making the work better.",
+    "tags": ["feedback", "growth_mindset", "communication"]
+  },
+  {
+    "id": 9,
+    "question": "What experience do you have with localisation/translation projects?",
+    "answer": "At NB Publishers, I oversaw co-production projects with international publishers, which involved managing translation, design adaptation, and cross-border approvals. I learned that localisation isn't just about language—it's about cultural resonance. A joke that works in one market might fall flat in another. I coordinated with translators, ensured brand consistency across languages, and managed the logistics of multi-territory releases. This experience gave me a strong foundation in the complexities of bringing content to global audiences.",
+    "tags": ["localisation", "translation", "international"]
+  },
+  {
+    "id": 10,
+    "question": "Why did you move to Germany?",
+    "answer": "I moved to Germany in 2018, initially for a teaching opportunity. What started as an adventure became a home. I've developed deep roots here—I use German daily in my professional life, I understand the working culture, and I've built a life in the Göttingen area. Living abroad has broadened my perspective significantly. It's given me firsthand experience with cross-cultural communication and made me more adaptable. I'm now fully committed to building my career here in Germany.",
+    "tags": ["personal", "relocation", "germany"]
+  },
+  {
+    "id": 11,
+    "question": "Tell me about your AI/technical training.",
+    "answer": "I recently completed an AI Project Management bootcamp at neuefische GmbH, where I gained hands-on experience with Python, data manipulation, ML pipeline development, and Agile methodologies. The program included a final team project delivering a real-world AI product. While I'm not positioning myself as a developer, this training gave me the technical literacy to communicate effectively with engineering teams, understand AI capabilities and limitations, and contribute to product decisions involving AI technologies.",
+    "tags": ["technical", "ai", "training", "skills"]
+  },
+  {
+    "id": 12,
+    "question": "How do you stay organised when managing multiple projects?",
+    "answer": "I use a combination of tools and rituals. For tracking, I rely on structured project documentation—status updates, milestone tracking, risk logs. But the real key is my daily review practice: every morning I identify the three most important things that must move forward that day. At Jonathan Ball Publishers, I managed 20+ concurrent book projects by maintaining a master schedule and having weekly check-ins with each project's key stakeholders. When everything is visible, nothing gets forgotten.",
+    "tags": ["organisation", "project_management", "productivity"]
+  },
+  {
+    "id": 13,
+    "question": "What do you know about our company?",
+    "answer": "[Research-dependent response - I prepare by reviewing the company's website, recent news, products/services, mission statement, and any notable projects or achievements. I look for specific details that show genuine interest rather than generic statements.]",
+    "tags": ["company_research"],
+    "note": "Always customize based on research"
+  },
+  {
+    "id": 14,
+    "question": "Where do you see yourself in 5 years?",
+    "answer": "In five years, I see myself having grown into a senior role where I'm not just managing projects but shaping strategy. I want to be in a position where my experience in publishing, content, and now AI technologies comes together to drive meaningful decisions. I'm committed to continuous learning—whether that's deepening my technical skills or developing leadership capabilities. Most importantly, I want to be somewhere I'm proud of, contributing to work that matters.",
+    "tags": ["career_goals", "ambition", "growth"]
+  },
+  {
+    "id": 15,
+    "question": "What salary are you looking for?",
+    "answer": "Based on my research and experience level, I'm looking for something in the range of €50,000 to €58,000 annually. I'm open to discussing this based on the full compensation package and the specific responsibilities of the role. What's most important to me is finding the right fit where I can contribute meaningfully and grow professionally.",
+    "tags": ["salary", "negotiation", "compensation"]
+  },
+  {
+    "id": 16,
+    "question": "Tell me about your published books.",
+    "answer": "I'm a published children's author with Penguin Random House South Africa. My work includes 'The Legend of Mamlambo,' which brings South African water spirit mythology to young readers, and the 'Kwasuka Sukela' series co-authored with Dean White—'The Blacksmith and the Dragonfly' and 'The Princess and the Sangoma.' These books celebrate African folklore and storytelling traditions. Writing for children requires clarity, engagement, and respect for your audience—skills that translate directly to any content work. Being a published author also gives me unique perspective when working with other writers.",
+    "tags": ["books", "publishing", "creative_writing", "achievement"]
+  },
+  {
+    "id": 17,
+    "question": "How do you handle conflict in a team?",
+    "answer": "I address conflicts early and directly, but with empathy. I've found that most workplace conflicts stem from misaligned expectations or miscommunication rather than genuine disagreement. My approach is to first understand each perspective—really listen—and then look for the shared goal underneath the disagreement. At Jonathan Ball Publishers, I mediated between authors and editors several times. The key was helping each party see the other's constraints and finding solutions that served the book, which was ultimately what everyone cared about.",
+    "tags": ["conflict_resolution", "teamwork", "communication"]
+  },
+  {
+    "id": 18,
+    "question": "Do you have any questions for us?",
+    "answer": "Yes, I've prepared several: What does success look like in this role after the first 90 days? How would you describe the team culture? What are the biggest challenges the team is currently facing? What opportunities for professional development does the company offer? Is there anything about my background that gives you pause that I could address?",
+    "tags": ["questions", "interview_close"],
+    "note": "Always have 3-5 prepared questions"
+  }
+]

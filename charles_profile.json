@@ -1,0 +1,306 @@
+{
+  "profile": {
+    "name": "Charles Siboto",
+    "email": "csiboto@gmail.com",
+    "phone": "+49 176 8787 3255",
+    "location": "Neu-Eichenberg, Germany",
+    "available_from": "2026-03-01",
+    "salary_expectation": "€50,000 - €58,000",
+    "languages": {
+      "English": "Native",
+      "German": "Advanced (daily professional use since 2018)"
+    },
+    "living_in_germany_since": 2018,
+    "links": {
+      "linkedin": "https://www.linkedin.com/in/charlessiboto-2a9a773b",
+      "portfolio": "https://charless-digital-canvas.lovable.app",
+      "github": "https://github.com/CharlesSiboto",
+      "penguin_author": "https://www.penguinrandomhouse.co.za/author/charles-siboto",
+      "goodreads": "https://www.goodreads.com/author/show/19832919.Charles_Siboto",
+      "bizcommunity": "https://www.bizcommunity.com/Profile/CharlesSiboto"
+    }
+  },
+
+  "professional_identity": {
+    "headline": "Editor | Proofreader | Writer | English Educator",
+    "portfolio_tagline": "Dedicated storyteller crafting narratives that captivate and connect. Over a decade of experience bringing clarity, impact, and style to every word.",
+    "about_me": "Editor | Writer | Content Strategist with 10+ years' experience across publishing, digital media and audience engagement. I craft clear, impactful content strategies rooted in storytelling, creativity and data. Passionate about pop culture, podcasting and video culture. Currently upskilling through an AI Project Management (Data Science & Python) Bootcamp with neuefische GmbH. I've worked across various editorial roles in South Africa and Germany, from editing children's books and commissioning non-fiction content to creating gaming content, arts reviews and educational materials.",
+    "brand_bio": "With over a decade of experience spanning the South African and European markets, I am a dedicated storyteller with a meticulous eye for detail and a talent for crafting narratives that captivate and connect.",
+    "cta": "Ready to bring your story to life? Whether you need editing, proofreading, or compelling content, I'm here to help craft narratives that resonate.",
+    "signature_quote": "We help people with monster problems and monsters with people problems.",
+    "goodreads_rating": "4.55 average (11 ratings, 3 reviews)"
+  },
+
+  "services": {
+    "editing_proofreading": "Meticulous attention to detail across all content types, ensuring precision while preserving your unique voice",
+    "content_writing": "Fresh, concise writing that resonates with readers. From marketing copy to technical documents",
+    "creative_writing": "Published author of captivating children's books celebrating African storytelling",
+    "english_education": "Passionate about teaching and developing language skills",
+    "style_guides": ["AP", "Chicago Manual of Style", "MLA"]
+  },
+
+  "experience": [
+    {
+      "title": "Pädagogische Mitarbeiter | English Educator",
+      "company": "ASC Göttingen von 1846 e.V.",
+      "location": "Göttingen, Germany",
+      "dates": "Nov 2025 - Present",
+      "highlights": [
+        "Conducting English courses and workshops for colleagues, demonstrating strong communication and training delivery skills",
+        "Managing lesson planning and resource coordination, ensuring consistent quality across all sessions",
+        "Improving student engagement by facilitating activities in ASC's Leinebergschule aftercare program"
+      ]
+    },
+    {
+      "title": "Contributing Writer | Entertainment & Gaming",
+      "company": "Bizcommunity.com",
+      "location": "Cape Town, South Africa",
+      "dates": "May 2012 - Mar 2025",
+      "highlights": [
+        "Authored entertainment coverage, including game reviews and industry trend analysis for 12+ years",
+        "Grew readership by 35% through compelling, culturally relevant content",
+        "Established personal brand for superhero film reviews and trend analyses",
+        "Led #YouthMonth and #BizTrends campaigns with insightful content"
+      ]
+    },
+    {
+      "title": "Online Editor | Content Production",
+      "company": "Software & Support Media",
+      "location": "Frankfurt, Germany",
+      "dates": "Jan 2024 - Jun 2024",
+      "highlights": [
+        "Managed content production across web platforms, coordinating with internal teams and external contributors",
+        "Coordinated planning and execution of workshops and online events",
+        "Developed content strategies aligned with marketing campaigns",
+        "Maintained editorial quality standards across all published materials"
+      ]
+    },
+    {
+      "title": "English Educator & Aftercare Facilitator",
+      "company": "ASC Göttingen von 1846 e.V.",
+      "location": "Göttingen, Germany",
+      "dates": "Oct 2022 - Dec 2023",
+      "highlights": [
+        "Improved language proficiency by 30% through tailored English courses for 40 colleagues",
+        "Facilitated interactive workshops, managing group dynamics and ensuring positive learning outcomes",
+        "Delivered student-centered lesson plans for aftercare program"
+      ]
+    },
+    {
+      "title": "Editor & Project Manager",
+      "company": "Jonathan Ball Publishers",
+      "location": "Cape Town, South Africa",
+      "dates": "Oct 2021 - Oct 2022",
+      "highlights": [
+        "Planned, monitored and controlled 20+ book projects annually, ensuring all deliverables met quality standards, timelines and budget",
+        "Coordinated cross-functional teams including editors, designers and production staff",
+        "Negotiated with authors, printers and other stakeholders",
+        "Spearheaded e-book commissioning, overseeing digital asset management and quality assurance"
+      ]
+    },
+    {
+      "title": "English Teacher",
+      "company": "Rhenanus-Schule Bad Sooden-Allendorf",
+      "location": "Bad Sooden-Allendorf, Germany",
+      "dates": "Jan 2018 - Dec 2020",
+      "highlights": [
+        "Taught English as a foreign language to diverse student groups",
+        "Coordinated extracurricular activities and themed events"
+      ]
+    },
+    {
+      "title": "Junior Editor | Editorial Assistant",
+      "company": "NB Publishers",
+      "location": "Cape Town, South Africa",
+      "dates": "Jun 2013 - Jun 2017",
+      "highlights": [
+        "Managed digital publishing of EPUB/MOBIs, releasing 20+ titles annually for children and youth categories",
+        "Oversaw translation and co-production projects with international publishers",
+        "Delivered projects under tight deadlines while maintaining budget, quality and branding goals"
+      ]
+    }
+  ],
+
+  "education": [
+    {
+      "degree": "AI Project Management (Online Bootcamp)",
+      "institution": "neuefische GmbH / SPICED Academy, Berlin",
+      "dates": "Jun 2025 - Nov 2025",
+      "skills": ["Artificial Intelligence", "Project Management", "Python Programming", "Agile Scrum", "Data Visualization", "ML Pipeline Development"]
+    },
+    {
+      "degree": "BA Language Practitioners",
+      "institution": "University of Johannesburg",
+      "dates": "2006 - 2010",
+      "skills": ["English Literature", "Linguistics and Literary Studies", "Latin"]
+    },
+    {
+      "degree": "Advanced Copy Editing and Proofreading",
+      "institution": "McGillivray Linnegar Associates",
+      "dates": "2015"
+    }
+  ],
+
+  "skills": {
+    "core": ["Editing", "Publishing", "Digital Media", "Communication", "Project Management", "Children's Books", "Content Creation", "Proofreading", "Writing", "Strategic Thinking", "Teaching", "Education"],
+    "technical": ["Python", "Data Manipulation", "Design Thinking", "Data Visualization", "Agile Scrum", "Bash Scripting", "Git Version Control", "ML Pipeline Development", "PySpark", "Microsoft Office", "WordPress", "Content Management Systems"],
+    "project_management": ["Planning & Scheduling", "Budget Control", "Quality Assurance", "Risk Management", "Stakeholder Negotiation"],
+    "localisation": ["Translation Oversight", "International Co-production", "Cultural Adaptation", "Multi-language Coordination", "Editorial Quality Control"]
+  },
+
+  "books": [
+    {
+      "title": "The Legend of Mamlambo",
+      "author": "Charles Siboto",
+      "illustrator": "Fanika Cronje",
+      "publisher": "Penguin Random House South Africa",
+      "year": 2024,
+      "description": "A captivating journey into South African folklore and mythology, bringing ancient mythology to life for young readers",
+      "age_range": "8-12",
+      "series": "Standalone"
+    },
+    {
+      "title": "The Blacksmith and the Dragonfly",
+      "authors": ["Dean White", "Charles Siboto"],
+      "series": "Kwasuka Sukela",
+      "publisher": "Penguin Random House South Africa",
+      "year": 2025,
+      "description": "Prince Siyabulela's passion for fashion clashes with his father's warrior expectations. Transformed into a dragonfly by a wicked witch, he is captured by the blacksmith's daughter, Ndiliswa. Together, they must overcome treachery and darkness.",
+      "age_range": "9+"
+    },
+    {
+      "title": "The Princess and the Sangoma",
+      "authors": ["Dean White", "Charles Siboto"],
+      "series": "Kwasuka Sukela",
+      "publisher": "Penguin Random House South Africa",
+      "year": 2025,
+      "description": "In a Zulu kingdom, Princess Nolwazi dreams of building the first flying machine. In the spirit realm, a vengeful witch doctor sends his son Xolani to destroy her world, but Xolani becomes enchanted by her instead. Will love conquer darkness?",
+      "age_range": "9+"
+    },
+    {
+      "title": "Verlore in Duitsland (Lost in Germany)",
+      "author": "Charles Siboto",
+      "type": "Short Story",
+      "publication": "Draaie, swaaie en afdwaalpaaie (Afrikaans anthology)",
+      "year": 2024,
+      "description": "A short story showcasing contribution to contemporary Afrikaans literature"
+    }
+  ],
+
+  "writing_samples": {
+    "film_reviews": [
+      {
+        "title": "Sinners film review: a haunting, soulful gothic triumph",
+        "description": "Ryan Coogler's Sinners transcends the typical vampire movie with its haunting blend of gothic horror, cultural depth, and atmospheric storytelling, anchored by a mesmerising dual performance from Michael B. Jordan as the Moore twins.",
+        "platform": "Bizcommunity"
+      },
+      {
+        "title": "Dune: Part Two Review: Expansive, Enigmatic and Exceptional",
+        "description": "An in-depth review exploring its expansive narrative, enigmatic characters and exceptional visual storytelling."
+      },
+      {
+        "title": "Unveiling Oppenheimer on Screen: A Journey into Brilliance",
+        "description": "Critical analysis of Christopher Nolan's biographical masterpiece, examining its historical accuracy and cinematic innovation."
+      },
+      {
+        "title": "Barbie: A Whimsical and Empowering Cinematic Odyssey",
+        "description": "A thoughtful exploration of Greta Gerwig's cultural phenomenon, discussing themes of feminism, identity, and modern storytelling."
+      }
+    ],
+    "cultural_commentary": [
+      {
+        "title": "#YouthMatters: Anti-Vaxxers, Conspiracy Theories and Misinformation",
+        "description": "Critical commentary on youth perspectives regarding vaccination, misinformation, and public health during the pandemic era."
+      },
+      {
+        "title": "Eish, Jozi. Ja, neh. Jozi, that great city",
+        "description": "A deeply evocative exploration of Johannesburg's soul, examining the city's layers, myths, and the haunting concept of amasilamusi—where urban legends meet lived reality."
+      }
+    ]
+  },
+
+  "gaming_background": {
+    "passion": "Lifelong Nintendo enthusiast since the Game Boy era",
+    "first_game": "The Legend of Zelda: Link's Awakening",
+    "favourite_franchises": ["The Legend of Zelda", "Metroid", "Fire Emblem"],
+    "perspective": "Gaming is more than entertainment. It is a storytelling engine, a global community and a space for cultural innovation."
+  },
+
+  "target_companies": {
+    "high_priority": {
+      "german_childrens_publishing": ["Carlsen", "Oetinger", "Thienemann-Esslinger", "Arena Verlag", "Ravensburger", "Loewe Verlag"],
+      "german_gaming": ["InnoGames", "Goodgame Studios", "Deck13", "Yager", "Mimimi Games", "Freaks 4U Gaming"],
+      "streaming_tech": ["Netflix"]
+    },
+    "medium_priority": {
+      "european_gaming": ["CD Projekt Red", "Remedy", "Larian Studios"],
+      "international_publishing": ["Hachette Germany", "PRH Germany divisions"]
+    },
+    "low_priority_too_competitive": ["Nintendo", "Springer Nature", "Zalando", "Major AAA studios"]
+  },
+
+  "application_history": {
+    "total": 8,
+    "rejected": 7,
+    "pending": 1,
+    "applications": [
+      {"company": "Freaks 4U Gaming", "role": "Senior Project Manager", "status": "pending", "date": "2025-12-18", "notes": "Strong cover letter with gaming passion"},
+      {"company": "Nintendo of Europe", "role": "(Associate) Localisation Producer", "status": "rejected", "date": "2026-01-21", "notes": "AAA gaming extremely competitive - no shipped titles"},
+      {"company": "Netflix", "role": "Product Language Manager, DACH", "status": "applied", "date": "2026-01-16", "notes": "Strong DACH fluency angle + AI skills"},
+      {"company": "Springer Nature", "role": "Product Manager (Preprints)", "status": "rejected", "date": "2026-01-13", "notes": "Need academic/research background"},
+      {"company": "Loewe Verlag", "role": "Rights Manager", "status": "rejected", "date": "2025-12-15", "notes": "Personalized rejection by Lisa-Marie Röller - CLOSEST CALL"},
+      {"company": "Cinema for Peace", "role": "Project Manager Film Curator", "status": "rejected", "notes": "Film reviews ≠ film curation"},
+      {"company": "eduki", "role": "Key Account Manager", "status": "rejected", "notes": "KAM is a SALES role - role mismatch"},
+      {"company": "GIANTS Software", "role": "Publishing Assistant", "status": "rejected", "notes": "Gaming publishing ≠ book publishing"}
+    ],
+    "learnings": [
+      "Avoid sales/KAM roles - not a strength",
+      "Scientific publishing requires academic background",
+      "AAA gaming (Nintendo) is extremely competitive without shipped titles",
+      "Children's publishing is promising (Loewe was close)",
+      "Mid-tier gaming is reasonable target",
+      "Personalized rejections = seriously considered"
+    ]
+  },
+
+  "cv_versions": {
+    "localisation_pm": {
+      "headline": "Localisation & Project Management Professional",
+      "target_roles": ["Localisation Producer", "Project Manager", "Production Coordinator"],
+      "summary": "Project management and localisation professional with over ten years of experience delivering complex publishing projects on time, within budget and to the highest quality standards."
+    },
+    "product_language_manager": {
+      "headline": "Product Language Manager",
+      "target_roles": ["Language Manager", "Localisation Manager", "Content Quality Manager"],
+      "summary": "Linguistic and editorial professional with over ten years of experience in publishing, translation oversight and quality frameworks, combining deep expertise in language craft with practical knowledge of AI and machine learning technologies."
+    },
+    "product_manager": {
+      "headline": "Product Manager",
+      "target_roles": ["Product Manager", "Digital Product Owner", "Content Strategy Lead"],
+      "summary": "Product management professional with over ten years of experience in publishing and digital content strategy, expert in identifying market trends and executing innovative content strategies."
+    }
+  },
+
+  "cover_letter_style": {
+    "tone": "Professional, enthusiastic, personable, warm",
+    "opening": "I am writing to apply for the [ROLE] position at [COMPANY].",
+    "signature": "Warm regards,\nCharles Siboto",
+    "hooks": {
+      "gaming": "As a lifelong Nintendo fan whose journey began with the Game Boy and The Legend of Zelda: Link's Awakening",
+      "publishing": "With over ten years of experience in publishing and digital content management",
+      "language": "With a degree in Language Practice, over ten years of editorial experience, and advanced German fluency gained through seven years in Germany",
+      "ai": "combining deep expertise in language craft with practical knowledge of AI and machine learning technologies"
+    },
+    "transparency_pattern": "I want to be transparent: while I have [strength], my hands-on experience with [gap] is limited. However, I am a dedicated and quick learner..."
+  },
+
+  "kyle_project": {
+    "name": "Kyle",
+    "description": "AI-powered job application assistant designed to eventually apply for jobs autonomously using Charles's professional data and writing style",
+    "repository": "https://github.com/CharlesSiboto/kyle-assistant",
+    "deployment": "https://kyle-assistant.onrender.com",
+    "tech_stack": ["Python", "Flask", "Gunicorn", "Render"],
+    "git_setup": ["cd Kyle", "git init", "git add .", "git commit -m \"Kyle\"", "gh repo create kyle-assistant --public --push"],
+    "created": "2026-01"
+  }
+}
