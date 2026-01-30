@@ -189,8 +189,8 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         
         <div class="card">
             <h2>🎮 Gaming Background</h2>
-            <p><strong>First Game:</strong> The Legend of Zelda: Link's Awakening (Game Boy)</p>
-            <p><strong>Favourites:</strong> Zelda, Metroid, Fire Emblem</p>
+            <p><strong>First Game:</strong> Super Mario Bros. on the NES</p>
+            <p><strong>Favourites:</strong> Mass Effect, Half-Life, Dragonage, Baldur's Gate, Alan Wake, Bioshock</p>
             <p style="margin-top:10px; color:#aaa; font-size:0.9em;">"Gaming is more than entertainment. It is a storytelling engine, a global community and a space for cultural innovation."</p>
         </div>
     </div>
@@ -245,6 +245,10 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         <div class="card generator">
             <input type="text" id="gen-company" placeholder="Company name">
             <input type="text" id="gen-role" placeholder="Role title">
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <button class="btn" onclick="researchCompany('letter')" style="background:#3498db; flex:1;">🔍 Research Company</button>
+            </div>
+            <div id="letter-research" style="background:#1a1a2e; padding:10px; border-radius:8px; margin-bottom:10px; font-size:0.8em; display:none; max-height:200px; overflow-y:auto; border:1px solid #3498db;"></div>
             <textarea id="gen-jobdesc" placeholder="Paste job description here (optional - for AI generation)" style="width:100%%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; font-size:14px; min-height:100px; resize:vertical;"></textarea>
             <select id="gen-industry">
                 <option value="gaming">Gaming / Esports</option>
@@ -272,6 +276,10 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         <div class="card generator">
             <input type="text" id="cv-role" placeholder="Target role (e.g. Localisation Producer)">
             <input type="text" id="cv-company" placeholder="Company name (optional)">
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <button class="btn" onclick="researchCompany('cv')" style="background:#3498db; flex:1;">🔍 Research Company</button>
+            </div>
+            <div id="cv-research" style="background:#1a1a2e; padding:10px; border-radius:8px; margin-bottom:10px; font-size:0.8em; display:none; max-height:200px; overflow-y:auto; border:1px solid #3498db;"></div>
             <textarea id="cv-jobdesc" placeholder="Paste job description here (optional - for AI generation)" style="width:100%%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; font-size:14px; min-height:100px; resize:vertical;"></textarea>
             <select id="cv-type">
                 <option value="localisation">Localisation & Project Management</option>
@@ -480,7 +488,7 @@ PUBLICATIONS
 
 GAMING BACKGROUND
 
-Lifelong Nintendo enthusiast since the Game Boy era. First game: The Legend of Zelda: Link's Awakening. Favourite franchises: Zelda, Metroid, Fire Emblem. Passionate about gaming as a storytelling medium and cultural force.
+Lifelong gaming enthusiast since the NES and SNES era, all the way to modern consoles and PC gaming.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -493,6 +501,57 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
             const cv = document.getElementById('generated-cv').textContent;
             if (cv) {
                 navigator.clipboard.writeText(cv).then(() => alert('CV copied to clipboard!'));
+            }
+        }
+        
+        // Store research results
+        let letterResearch = '';
+        let cvResearch = '';
+        
+        async function researchCompany(type) {
+            const companyInput = type === 'letter' ? 'gen-company' : 'cv-company';
+            const researchDiv = type === 'letter' ? 'letter-research' : 'cv-research';
+            const statusDiv = type === 'letter' ? 'ai-status' : 'cv-status';
+            
+            const company = document.getElementById(companyInput).value;
+            const researchEl = document.getElementById(researchDiv);
+            const statusEl = document.getElementById(statusDiv);
+            
+            if (!company) {
+                alert('Please enter a company name first');
+                return;
+            }
+            
+            statusEl.textContent = '🔍 Researching ' + company + '... (10-20 seconds)';
+            statusEl.style.color = '#3498db';
+            researchEl.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/research', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ company: company })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (type === 'letter') {
+                        letterResearch = data.research;
+                    } else {
+                        cvResearch = data.research;
+                    }
+                    researchEl.innerHTML = '<strong>📋 Research for ' + company + ':</strong><br><br>' + data.research.replace(/\\n/g, '<br>').replace(/\\*\\*(.+?)\\*\\*/g, '<strong>$1</strong>');
+                    researchEl.style.display = 'block';
+                    statusEl.textContent = '✅ Research complete! Now click AI Generate to use it.';
+                    statusEl.style.color = '#2ecc71';
+                } else {
+                    statusEl.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+                    statusEl.style.color = '#e74c3c';
+                }
+            } catch (err) {
+                statusEl.textContent = '❌ Error: ' + err.message;
+                statusEl.style.color = '#e74c3c';
             }
         }
         
@@ -515,7 +574,8 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
                         type: 'letter',
                         company: company,
                         role: role,
-                        job_description: jobDesc
+                        job_description: jobDesc,
+                        company_research: letterResearch
                     })
                 });
                 
@@ -523,7 +583,7 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
                 
                 if (data.success) {
                     output.textContent = data.content;
-                    status.textContent = '✅ Generated successfully!';
+                    status.textContent = '✅ Generated successfully!' + (letterResearch ? ' (with company research)' : '');
                     status.style.color = '#2ecc71';
                 } else {
                     status.textContent = '❌ Error: ' + (data.error || 'Unknown error');
@@ -556,7 +616,8 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
                         company: company,
                         role: role,
                         job_description: jobDesc,
-                        cv_style: cvType
+                        cv_style: cvType,
+                        company_research: cvResearch
                     })
                 });
                 
@@ -564,7 +625,7 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
                 
                 if (data.success) {
                     output.textContent = data.content;
-                    status.textContent = '✅ Generated successfully!';
+                    status.textContent = '✅ Generated successfully!' + (cvResearch ? ' (with company research)' : '');
                     status.style.color = '#2ecc71';
                 } else {
                     status.textContent = '❌ Error: ' + (data.error || 'Unknown error');
@@ -742,10 +803,57 @@ def api_interview():
 def api_letters():
     return jsonify(COVER_LETTERS)
 
+@app.route('/api/research', methods=['POST'])
+@requires_auth
+def api_research():
+    """Research a company using Claude API with web search"""
+    if not ANTHROPIC_API_KEY:
+        return jsonify({'error': 'API key not configured'}), 500
+    
+    data = request.json
+    company = data.get('company', '')
+    
+    if not company:
+        return jsonify({'error': 'Company name required'}), 400
+    
+    try:
+        response = requests.post(
+            'https://api.anthropic.com/v1/messages',
+            headers={
+                'Content-Type': 'application/json',
+                'x-api-key': ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            json={
+                'model': 'claude-sonnet-4-20250514',
+                'max_tokens': 1500,
+                'messages': [{'role': 'user', 'content': f"""Research the company "{company}" and provide a concise briefing for a job applicant. Include:
+
+1. **What they do**: Core business, products/services (2-3 sentences)
+2. **Industry & Size**: Sector, approximate size, headquarters location
+3. **Culture & Values**: Company culture, mission, what they value in employees
+4. **Recent News**: Any recent developments, launches, or news (if known)
+5. **Why someone might want to work there**: Key selling points
+6. **Tips for applicants**: What to emphasize in an application
+
+Keep it factual and concise. If you're uncertain about something, say so. Format with clear headers."""}]
+            },
+            timeout=60
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            return jsonify({'success': True, 'research': result['content'][0]['text']})
+        else:
+            return jsonify({'error': f'API error: {response.status_code}'}), 500
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/generate', methods=['POST'])
 @requires_auth
 def api_generate():
-    """Generate cover letter or CV using Claude API"""
+    """Generate cover letter or CV using Claude API with optional company research"""
     if not ANTHROPIC_API_KEY:
         return jsonify({'error': 'API key not configured'}), 500
     
@@ -755,6 +863,7 @@ def api_generate():
     role = data.get('role', '[ROLE]')
     job_description = data.get('job_description', '')
     cv_style = data.get('cv_style', 'localisation')
+    company_research = data.get('company_research', '')  # Pre-fetched research
     
     # Build Charles's profile context
     profile_context = f"""
@@ -795,11 +904,22 @@ SKILLS:
 - Languages: English (Native), German (Advanced - daily use since 2018)
 
 GAMING BACKGROUND:
-Lifelong Nintendo fan since Game Boy era. First game: Legend of Zelda: Link's Awakening. Favourites: Zelda, Metroid, Fire Emblem. Views gaming as storytelling engine and cultural innovation space.
+Lifelong gaming enthusiast since the NES and SNES era, all the way to modern consoles and PC gaming. First game: Super Mario Bros. on the NES. Favourites: Mass Effect, Half-Life, Dragonage, Baldur's Gate, Alan Wake, Bioshock. Views gaming as storytelling engine and cultural innovation space.
+"""
+
+    # Add company research context if available
+    company_context = ""
+    if company_research:
+        company_context = f"""
+COMPANY RESEARCH ON {company.upper()}:
+{company_research}
+
+Use this research to personalize the application - reference specific company values, recent news, or initiatives where relevant.
 """
 
     if gen_type == 'letter':
         prompt = f"""{profile_context}
+{company_context}
 
 TASK: Write a compelling, personalized cover letter for Charles applying to {company} for the role of {role}.
 
@@ -809,6 +929,7 @@ STYLE GUIDELINES:
 - Professional but warm and personable
 - Open with "I am writing to apply for the [ROLE] position at [COMPANY]"
 - Include a compelling hook relevant to the industry/company
+- If company research is provided, reference specific company values, mission, or recent news
 - Highlight 2-3 most relevant experiences with specific achievements
 - Show genuine enthusiasm for the company/role
 - Be transparent about any gaps but frame positively
@@ -842,6 +963,7 @@ Charles Siboto"""
         }
         
         prompt = f"""{profile_context}
+{company_context}
 
 TASK: Create a tailored CV for Charles targeting the role of {role} at {company or 'a company in this field'}.
 
@@ -850,7 +972,8 @@ CV STYLE: {style_descriptions.get(cv_style, style_descriptions['localisation'])}
 {"JOB DESCRIPTION:" + job_description if job_description else ""}
 
 GUIDELINES:
-- Tailor the professional summary to match the role
+- Tailor the professional summary to match the role and company
+- If company research is provided, align the CV with company values and culture
 - Prioritize and reorder experience bullets to highlight relevant skills
 - Use strong action verbs and quantified achievements where possible
 - Include relevant skills prominently
@@ -859,7 +982,7 @@ GUIDELINES:
 
 FORMAT as plain text CV with these sections:
 - Header (name, title, contact info)
-- Professional Summary (3-4 sentences, tailored)
+- Professional Summary (3-4 sentences, tailored to role and company)
 - Skills (grouped by category)
 - Professional Experience (reverse chronological, tailored bullets)
 - Education & Certifications
