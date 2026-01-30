@@ -4,15 +4,15 @@
     "email": "csiboto@gmail.com",
     "phone": "+49 176 8787 3255",
     "location": "Neu-Eichenberg, Germany",
-    "available_from": "2026-03-01",
-    "salary_expectation": "€50,000 - €58,000",
+    "available_from": "2026-05-01",
+    "salary_expectation": "€50,000 - €65,000",
     "languages": {
       "English": "Native",
       "German": "Advanced (daily professional use since 2018)"
     },
     "living_in_germany_since": 2018,
     "links": {
-      "linkedin": "https://www.linkedin.com/in/charlessiboto",
+      "linkedin": "https://www.linkedin.com/in/charles-siboto-2a9a773b",
       "portfolio": "https://charless-digital-canvas.lovable.app",
       "github": "https://github.com/CharlesSiboto",
       "penguin_author": "https://www.penguinrandomhouse.co.za/author/charles-siboto",
@@ -24,7 +24,7 @@
   "professional_identity": {
     "headline": "Editor | Proofreader | Writer | English Educator",
     "portfolio_tagline": "Dedicated storyteller crafting narratives that captivate and connect. Over a decade of experience bringing clarity, impact, and style to every word.",
-    "about_me": "Editor | Writer | Content Strategist with 10+ years' experience across publishing, digital media and audience engagement. I craft clear, impactful content strategies rooted in storytelling, creativity and data. Passionate about pop culture, podcasting and video culture. Currently upskilling through an AI Project Management (Data Science & Python) Bootcamp with neuefische GmbH. I've worked across various editorial roles in South Africa and Germany, from editing children's books and commissioning non-fiction content to creating gaming content, arts reviews and educational materials.",
+    "about_me": "Editor | Writer | Content Strategist with 10+ years' experience across publishing, digital media and audience engagement. I craft clear, impactful content strategies rooted in storytelling, creativity and data. Passionate about pop culture, podcasting and video culture. Recently completed an AI Project Management (Data Science & Python) Bootcamp with neuefische GmbH, adding Agile Scrum methodology and machine learning fundamentals to my skill set.",
     "brand_bio": "With over a decade of experience spanning the South African and European markets, I am a dedicated storyteller with a meticulous eye for detail and a talent for crafting narratives that captivate and connect.",
     "cta": "Ready to bring your story to life? Whether you need editing, proofreading, or compelling content, I'm here to help craft narratives that resonate.",
     "signature_quote": "We help people with monster problems and monsters with people problems.",
@@ -220,9 +220,9 @@
   },
 
   "gaming_background": {
-    "passion": "Lifelong Nintendo enthusiast since the Game Boy era",
-    "first_game": "The Legend of Zelda: Link's Awakening",
-    "favourite_franchises": ["The Legend of Zelda", "Metroid", "Fire Emblem"],
+    "passion": "Lifelong gaming enthusiast since the NES and SNES era, all the way to modern consoles and PC gaming",
+    "first_game": "Super Mario Bros. on the NES",
+    "favourite_franchises": ["Mass Effect", "Half-Life", "Dragonage", "Baldur's Gate", "Alan Wake", "Bioshock"],
     "perspective": "Gaming is more than entertainment. It is a storytelling engine, a global community and a space for cultural innovation."
   },
 
@@ -286,7 +286,7 @@
     "opening": "I am writing to apply for the [ROLE] position at [COMPANY].",
     "signature": "Warm regards,\nCharles Siboto",
     "hooks": {
-      "gaming": "As a lifelong Nintendo fan whose journey began with the Game Boy and The Legend of Zelda: Link's Awakening",
+      "gaming": "As a lifelong gaming enthusiast since the NES and SNES era, I bring not only professional skills but also a deep personal passion for gaming culture and storytelling.",
       "publishing": "With over ten years of experience in publishing and digital content management",
       "language": "With a degree in Language Practice, over ten years of editorial experience, and advanced German fluency gained through seven years in Germany",
       "ai": "combining deep expertise in language craft with practical knowledge of AI and machine learning technologies"
