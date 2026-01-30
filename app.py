@@ -1,12 +1,13 @@
 """
 Kyle - AI-Powered Job Application Assistant for Charles Siboto
-Mobile-friendly PWA with password protection
+Mobile-friendly PWA with password protection and Claude API integration
 """
 
 from flask import Flask, jsonify, Response, request
 from functools import wraps
 import json
 import os
+import requests
 
 app = Flask(__name__)
 
@@ -22,8 +23,9 @@ PROFILE = load_json('charles_profile.json')
 INTERVIEW_QA = load_json('interview_qa.json')
 COVER_LETTERS = load_json('cover_letters.json')
 
-# Password protection (optional)
+# API Keys
 PASSWORD = os.environ.get('PASSWORD')
+ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
 
 def check_auth(username, password):
     return password == PASSWORD
@@ -243,19 +245,19 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         <div class="card generator">
             <input type="text" id="gen-company" placeholder="Company name">
             <input type="text" id="gen-role" placeholder="Role title">
+            <textarea id="gen-jobdesc" placeholder="Paste job description here (optional - for AI generation)" style="width:100%%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; font-size:14px; min-height:100px; resize:vertical;"></textarea>
             <select id="gen-industry">
                 <option value="gaming">Gaming / Esports</option>
                 <option value="publishing">Publishing</option>
                 <option value="streaming">Streaming / Tech</option>
                 <option value="education">Education</option>
             </select>
-            <select id="gen-cv">
-                <option value="localisation">Localisation & PM CV</option>
-                <option value="language">Product Language Manager CV</option>
-                <option value="product">Product Manager CV</option>
-            </select>
-            <button class="btn" onclick="generateLetter()">Generate Letter</button>
-            <button class="btn" onclick="copyLetter()" style="background:#ffd700; margin-left:10px;">Copy</button>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+                <button class="btn" onclick="generateLetter()">Quick Generate</button>
+                <button class="btn" onclick="generateAILetter()" style="background:#9b59b6;">🤖 AI Generate</button>
+                <button class="btn" onclick="copyLetter()" style="background:#ffd700;">Copy</button>
+            </div>
+            <div id="ai-status" style="color:#888; font-size:0.85em; margin-top:10px;"></div>
             <div id="generated-letter"></div>
         </div>
     </div>
@@ -270,13 +272,18 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         <div class="card generator">
             <input type="text" id="cv-role" placeholder="Target role (e.g. Localisation Producer)">
             <input type="text" id="cv-company" placeholder="Company name (optional)">
+            <textarea id="cv-jobdesc" placeholder="Paste job description here (optional - for AI generation)" style="width:100%%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; font-size:14px; min-height:100px; resize:vertical;"></textarea>
             <select id="cv-type">
                 <option value="localisation">Localisation & Project Management</option>
                 <option value="language">Product Language Manager</option>
                 <option value="product">Product Manager</option>
             </select>
-            <button class="btn" onclick="generateCV()">Generate CV</button>
-            <button class="btn" onclick="copyCV()" style="background:#ffd700; margin-left:10px;">Copy</button>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+                <button class="btn" onclick="generateCV()">Quick Generate</button>
+                <button class="btn" onclick="generateAICV()" style="background:#9b59b6;">🤖 AI Generate</button>
+                <button class="btn" onclick="copyCV()" style="background:#ffd700;">Copy</button>
+            </div>
+            <div id="cv-status" style="color:#888; font-size:0.85em; margin-top:10px;"></div>
             <div id="generated-cv" style="background: #111; padding: 15px; border-radius: 8px; white-space: pre-wrap; font-size: 0.8em; line-height: 1.4; margin-top: 15px; max-height: 500px; overflow-y: auto;"></div>
         </div>
     </div>
@@ -321,7 +328,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 Neu-Eichenberg, Germany
 csiboto@gmail.com
 +49 176 8787 3255
-linkedin.com/in/charlessiboto
+linkedin.com/in/charles-siboto-2a9a773b
 
 ${date}
 
@@ -396,7 +403,7 @@ LANGUAGES: English (Native), German (Advanced - daily professional use since 201
 ${headlines[cvType]}
 
 Neu-Eichenberg, Germany | csiboto@gmail.com | +49 176 8787 3255
-LinkedIn: linkedin.com/in/charlessiboto | Portfolio: charless-digital-canvas.lovable.app
+LinkedIn: linkedin.com/in/charles-siboto-2a9a773b | Portfolio: charless-digital-canvas.lovable.app
 
 ${targetLine}
 
@@ -486,6 +493,86 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
             const cv = document.getElementById('generated-cv').textContent;
             if (cv) {
                 navigator.clipboard.writeText(cv).then(() => alert('CV copied to clipboard!'));
+            }
+        }
+        
+        async function generateAILetter() {
+            const company = document.getElementById('gen-company').value || '[COMPANY]';
+            const role = document.getElementById('gen-role').value || '[ROLE]';
+            const jobDesc = document.getElementById('gen-jobdesc').value;
+            const status = document.getElementById('ai-status');
+            const output = document.getElementById('generated-letter');
+            
+            status.textContent = '🤖 Generating with Claude AI... (10-30 seconds)';
+            status.style.color = '#9b59b6';
+            output.textContent = '';
+            
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        type: 'letter',
+                        company: company,
+                        role: role,
+                        job_description: jobDesc
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    output.textContent = data.content;
+                    status.textContent = '✅ Generated successfully!';
+                    status.style.color = '#2ecc71';
+                } else {
+                    status.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+                    status.style.color = '#e74c3c';
+                }
+            } catch (err) {
+                status.textContent = '❌ Error: ' + err.message;
+                status.style.color = '#e74c3c';
+            }
+        }
+        
+        async function generateAICV() {
+            const role = document.getElementById('cv-role').value || 'Project Manager';
+            const company = document.getElementById('cv-company').value;
+            const jobDesc = document.getElementById('cv-jobdesc').value;
+            const cvType = document.getElementById('cv-type').value;
+            const status = document.getElementById('cv-status');
+            const output = document.getElementById('generated-cv');
+            
+            status.textContent = '🤖 Generating with Claude AI... (10-30 seconds)';
+            status.style.color = '#9b59b6';
+            output.textContent = '';
+            
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        type: 'cv',
+                        company: company,
+                        role: role,
+                        job_description: jobDesc,
+                        cv_style: cvType
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    output.textContent = data.content;
+                    status.textContent = '✅ Generated successfully!';
+                    status.style.color = '#2ecc71';
+                } else {
+                    status.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+                    status.style.color = '#e74c3c';
+                }
+            } catch (err) {
+                status.textContent = '❌ Error: ' + err.message;
+                status.style.color = '#e74c3c';
             }
         }
         
@@ -654,6 +741,157 @@ def api_interview():
 @requires_auth
 def api_letters():
     return jsonify(COVER_LETTERS)
+
+@app.route('/api/generate', methods=['POST'])
+@requires_auth
+def api_generate():
+    """Generate cover letter or CV using Claude API"""
+    if not ANTHROPIC_API_KEY:
+        return jsonify({'error': 'API key not configured'}), 500
+    
+    data = request.json
+    gen_type = data.get('type', 'letter')  # 'letter' or 'cv'
+    company = data.get('company', '[COMPANY]')
+    role = data.get('role', '[ROLE]')
+    job_description = data.get('job_description', '')
+    cv_style = data.get('cv_style', 'localisation')
+    
+    # Build Charles's profile context
+    profile_context = f"""
+CHARLES SIBOTO'S PROFILE:
+
+Name: Charles Siboto
+Location: Neu-Eichenberg, Germany
+Email: csiboto@gmail.com
+Phone: +49 176 8787 3255
+LinkedIn: linkedin.com/in/charles-siboto-2a9a773b
+Portfolio: charless-digital-canvas.lovable.app
+Available from: 1 March 2026
+Salary expectation: €50,000 - €58,000
+
+PROFESSIONAL SUMMARY:
+Editor, Writer, and Project Manager with 10+ years experience in publishing, digital media, and education. Published children's author with Penguin Random House South Africa. Living in Germany since 2018 with advanced German fluency. Recently completed AI Project Management bootcamp at neuefische GmbH (Agile Scrum certified).
+
+EXPERIENCE:
+- English Educator, ASC Göttingen (Nov 2025 - Present): English courses, lesson planning, aftercare program
+- Contributing Writer, Bizcommunity.com (May 2012 - Mar 2025): 12+ years entertainment/gaming coverage, grew readership 35%
+- Online Editor, Software & Support Media (Jan 2024 - Jun 2024): Content production, workshops, content strategy
+- Editor & Project Manager, Jonathan Ball Publishers (Oct 2021 - Oct 2022): Managed 20+ book titles annually, cross-functional teams, e-book commissioning
+- Junior Editor, NB Publishers (Jun 2013 - Jun 2017): Digital publishing 20+ titles/year, translation/co-production projects
+
+EDUCATION:
+- AI Project Management, neuefische GmbH (2025): Python, Agile Scrum, ML, Data Visualization
+- BA Language Practice, University of Johannesburg (2006-2010)
+- Advanced Copy Editing & Proofreading, McGillivray Linnegar (2015)
+
+PUBLISHED BOOKS:
+- The Legend of Mamlambo (Penguin Random House SA, 2024)
+- The Blacksmith and the Dragonfly - Kwasuka Sukela series (2025)
+- The Princess and the Sangoma - Kwasuka Sukela series (2025)
+
+SKILLS:
+- Core: Editing, Publishing, Project Management, Content Creation, Proofreading, Teaching
+- Technical: Python, Agile Scrum, Git, Data Visualization, CMS, WordPress
+- Languages: English (Native), German (Advanced - daily use since 2018)
+
+GAMING BACKGROUND:
+Lifelong Nintendo fan since Game Boy era. First game: Legend of Zelda: Link's Awakening. Favourites: Zelda, Metroid, Fire Emblem. Views gaming as storytelling engine and cultural innovation space.
+"""
+
+    if gen_type == 'letter':
+        prompt = f"""{profile_context}
+
+TASK: Write a compelling, personalized cover letter for Charles applying to {company} for the role of {role}.
+
+{"JOB DESCRIPTION:" + job_description if job_description else ""}
+
+STYLE GUIDELINES:
+- Professional but warm and personable
+- Open with "I am writing to apply for the [ROLE] position at [COMPANY]"
+- Include a compelling hook relevant to the industry/company
+- Highlight 2-3 most relevant experiences with specific achievements
+- Show genuine enthusiasm for the company/role
+- Be transparent about any gaps but frame positively
+- Close with availability (1 March 2026) and salary (€50,000-€58,000)
+- Sign off with "Warm regards, Charles Siboto"
+- Keep to approximately 350-450 words
+
+FORMAT:
+Start with contact header:
+Charles Siboto
+Neu-Eichenberg, Germany
+csiboto@gmail.com
++49 176 8787 3255
+linkedin.com/in/charles-siboto-2a9a773b
+
+[Today's date]
+
+Dear Hiring Team,
+
+[Letter body]
+
+Warm regards,
+
+Charles Siboto"""
+
+    else:  # CV
+        style_descriptions = {
+            'localisation': 'Localisation & Project Management - emphasize project management, translation oversight, international co-production, quality assurance',
+            'language': 'Product Language Manager - emphasize linguistic expertise, editorial standards, AI/ML knowledge, DACH market fluency',
+            'product': 'Product Manager - emphasize digital strategy, user research, data-driven decisions, content innovation'
+        }
+        
+        prompt = f"""{profile_context}
+
+TASK: Create a tailored CV for Charles targeting the role of {role} at {company or 'a company in this field'}.
+
+CV STYLE: {style_descriptions.get(cv_style, style_descriptions['localisation'])}
+
+{"JOB DESCRIPTION:" + job_description if job_description else ""}
+
+GUIDELINES:
+- Tailor the professional summary to match the role
+- Prioritize and reorder experience bullets to highlight relevant skills
+- Use strong action verbs and quantified achievements where possible
+- Include relevant skills prominently
+- Keep formatting clean with clear sections
+- Include gaming background if relevant to role (gaming/entertainment companies)
+
+FORMAT as plain text CV with these sections:
+- Header (name, title, contact info)
+- Professional Summary (3-4 sentences, tailored)
+- Skills (grouped by category)
+- Professional Experience (reverse chronological, tailored bullets)
+- Education & Certifications
+- Publications
+- Additional (gaming background if relevant)
+- Footer (availability, salary)"""
+
+    try:
+        response = requests.post(
+            'https://api.anthropic.com/v1/messages',
+            headers={
+                'Content-Type': 'application/json',
+                'x-api-key': ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            json={
+                'model': 'claude-sonnet-4-20250514',
+                'max_tokens': 2000,
+                'messages': [{'role': 'user', 'content': prompt}]
+            },
+            timeout=60
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            generated_text = result['content'][0]['text']
+            return jsonify({'success': True, 'content': generated_text})
+        else:
+            return jsonify({'error': f'API error: {response.status_code}'}), 500
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/manifest.json')
 def manifest():
