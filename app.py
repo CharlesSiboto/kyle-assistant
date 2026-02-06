@@ -130,12 +130,12 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
     
     <div class="tabs">
         <div class="tab active" data-tab="mind">🧠 Mind</div>
-        <div class="tab" data-tab="profile">Profile</div>
-        <div class="tab" data-tab="experience">Experience</div>
-        <div class="tab" data-tab="interview">Interview</div>
-        <div class="tab" data-tab="applications">Apps</div>
+        <div class="tab" data-tab="analyze">📋 Analyze</div>
+        <div class="tab" data-tab="tracker">📊 Tracker</div>
         <div class="tab" data-tab="generator">Letter</div>
         <div class="tab" data-tab="cvgen">CV</div>
+        <div class="tab" data-tab="profile">Profile</div>
+        <div class="tab" data-tab="interview">Q&A</div>
         <div class="tab" data-tab="books">Books</div>
     </div>
     
@@ -169,6 +169,117 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
                 <button class="btn" onclick="askMind('What are my strongest selling points for publishing roles?')" style="background:#333; font-size:0.8em;">Analyse my strengths</button>
                 <button class="btn" onclick="askMind('Prepare me for an interview question: Tell me about yourself')" style="background:#333; font-size:0.8em;">Interview prep</button>
                 <button class="btn" onclick="askMind('What types of roles should I be targeting based on my experience?')" style="background:#333; font-size:0.8em;">Career strategy</button>
+            </div>
+        </div>
+        
+        <div class="card" style="border-color:#3498db;">
+            <h3>🔗 Teach Kyle (Analyze URL)</h3>
+            <p style="font-size:0.85em; color:#888; margin-bottom:10px;">Give Kyle a URL to analyze - your articles, portfolio pages, LinkedIn posts, etc. Kyle will extract insights and suggest profile updates.</p>
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <input type="text" id="analyze-url" placeholder="https://..." style="flex:1; padding:12px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; font-size:14px;">
+                <button class="btn" onclick="analyzeURL()" style="background:#3498db;">🔍 Analyze</button>
+            </div>
+            <div id="analyze-status" style="color:#888; font-size:0.8em;"></div>
+            <div id="analyze-result" style="background:#111; border-radius:8px; padding:15px; margin-top:10px; font-size:0.85em; display:none; max-height:300px; overflow-y:auto;"></div>
+            <div id="learned-skills" style="margin-top:15px; display:none;">
+                <h4 style="color:#2ecc71; margin-bottom:10px;">✅ Kyle Learned:</h4>
+                <div id="skills-list"></div>
+                <button class="btn" onclick="saveToProfile()" style="background:#2ecc71; margin-top:10px;">💾 Save to Profile</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>🧠 Kyle's Memory</h3>
+            <p style="font-size:0.85em; color:#888; margin-bottom:10px;">Skills and insights Kyle has learned about you:</p>
+            <div id="kyle-memory" style="font-size:0.85em; color:#aaa;">
+                <em>No additional learnings yet. Analyze some URLs to teach Kyle more about you!</em>
+            </div>
+        </div>
+    </div>
+    
+    <div id="analyze" class="content">
+        <h2>📋 Job Description Analyzer</h2>
+        <div class="card" style="border-color:#e74c3c;">
+            <p style="font-size:0.85em; color:#888; margin-bottom:15px;">Paste a job description and Kyle will analyze your fit, highlight matching skills, identify gaps, and suggest what to emphasize.</p>
+            <input type="text" id="job-company" placeholder="Company name" style="width:100%%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; font-size:14px;">
+            <input type="text" id="job-role" placeholder="Role title" style="width:100%%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; font-size:14px;">
+            <textarea id="job-description" placeholder="Paste the full job description here..." style="width:100%%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; font-size:14px; min-height:150px; resize:vertical;"></textarea>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn" onclick="analyzeJob()" style="background:#e74c3c;">🔍 Analyze Fit</button>
+                <button class="btn" onclick="quickApply()" style="background:#9b59b6;">⚡ Quick Apply (Letter + CV)</button>
+            </div>
+            <div id="job-status" style="color:#888; font-size:0.85em; margin-top:10px;"></div>
+        </div>
+        
+        <div id="job-result" style="display:none;">
+            <div class="card" style="border-color:#2ecc71;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3>📊 Fit Analysis</h3>
+                    <div id="fit-score" style="font-size:2em; font-weight:bold;"></div>
+                </div>
+                <div id="fit-analysis" style="font-size:0.9em; line-height:1.6;"></div>
+            </div>
+            
+            <div class="card">
+                <h3>✅ Matching Skills</h3>
+                <div id="matching-skills" style="margin-top:10px;"></div>
+            </div>
+            
+            <div class="card">
+                <h3>⚠️ Gaps to Address</h3>
+                <div id="skill-gaps" style="margin-top:10px; font-size:0.9em;"></div>
+            </div>
+            
+            <div class="card">
+                <h3>💡 Recommendations</h3>
+                <div id="job-recommendations" style="margin-top:10px; font-size:0.9em;"></div>
+            </div>
+            
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button class="btn" onclick="addToTracker()" style="background:#3498db;">📊 Add to Tracker</button>
+                <button class="btn" onclick="generateFromAnalysis()" style="background:#2ecc71;">✨ Generate Letter</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="tracker" class="content">
+        <h2>📊 Application Tracker</h2>
+        
+        <div class="grid" style="margin-bottom:20px;">
+            <div class="stat"><div class="stat-value" id="stat-total">0</div><div class="stat-label">Total</div></div>
+            <div class="stat"><div class="stat-value" id="stat-pending" style="color:#ffd700;">0</div><div class="stat-label">Pending</div></div>
+            <div class="stat"><div class="stat-value" id="stat-interview" style="color:#3498db;">0</div><div class="stat-label">Interview</div></div>
+            <div class="stat"><div class="stat-value" id="stat-rejected" style="color:#e74c3c;">0</div><div class="stat-label">Rejected</div></div>
+        </div>
+        
+        <div class="card">
+            <h3>➕ Add Application</h3>
+            <div style="display:grid; gap:10px; margin-top:10px;">
+                <input type="text" id="track-company" placeholder="Company" style="padding:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
+                <input type="text" id="track-role" placeholder="Role" style="padding:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
+                <input type="date" id="track-date" style="padding:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
+                <select id="track-status" style="padding:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
+                    <option value="applied">Applied</option>
+                    <option value="interview">Interview</option>
+                    <option value="offer">Offer</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+                <textarea id="track-notes" placeholder="Notes (optional)" style="padding:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; min-height:60px;"></textarea>
+                <button class="btn" onclick="addApplication()" style="background:#2ecc71;">➕ Add Application</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📋 Applications</h3>
+            <div id="applications-list" style="margin-top:10px;">
+                <em style="color:#888;">No applications tracked yet.</em>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📈 Insights</h3>
+            <div id="tracker-insights" style="font-size:0.9em; color:#aaa;">
+                Track more applications to see insights.
             </div>
         </div>
     </div>
@@ -728,6 +839,334 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
             }
         }
         
+        // URL Analysis and Learning
+        let learnedData = JSON.parse(localStorage.getItem('kyleMemory') || '{"skills":[],"insights":[],"urls":[]}');
+        
+        function updateMemoryDisplay() {
+            const memDiv = document.getElementById('kyle-memory');
+            if (learnedData.skills.length > 0 || learnedData.insights.length > 0) {
+                let html = '';
+                if (learnedData.skills.length > 0) {
+                    html += '<strong>Skills:</strong> ' + learnedData.skills.map(s => '<span class="tag">' + s + '</span>').join(' ') + '<br><br>';
+                }
+                if (learnedData.urls.length > 0) {
+                    html += '<strong>Sources analyzed:</strong> ' + learnedData.urls.length + ' URLs<br>';
+                }
+                memDiv.innerHTML = html;
+            }
+        }
+        updateMemoryDisplay();
+        
+        let pendingSkills = [];
+        
+        async function analyzeURL() {
+            const urlInput = document.getElementById('analyze-url');
+            const status = document.getElementById('analyze-status');
+            const result = document.getElementById('analyze-result');
+            const learnedDiv = document.getElementById('learned-skills');
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                alert('Please enter a URL');
+                return;
+            }
+            
+            status.textContent = '🔍 Kyle is analyzing the URL... (this may take 30-60 seconds)';
+            status.style.color = '#3498db';
+            result.style.display = 'none';
+            learnedDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/analyze-url', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ url: url })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Show analysis
+                    result.innerHTML = data.analysis.replace(/\\n/g, '<br>').replace(/\\*\\*(.+?)\\*\\*/g, '<strong>$1</strong>');
+                    result.style.display = 'block';
+                    
+                    // Show learned skills
+                    if (data.new_skills && data.new_skills.length > 0) {
+                        pendingSkills = data.new_skills;
+                        const skillsList = document.getElementById('skills-list');
+                        skillsList.innerHTML = data.new_skills.map(s => '<span class="tag" style="background:#2ecc71;">' + s + '</span>').join(' ');
+                        learnedDiv.style.display = 'block';
+                    }
+                    
+                    status.textContent = '✅ Analysis complete!';
+                    status.style.color = '#2ecc71';
+                    
+                    // Add URL to analyzed list
+                    if (!learnedData.urls.includes(url)) {
+                        learnedData.urls.push(url);
+                        localStorage.setItem('kyleMemory', JSON.stringify(learnedData));
+                    }
+                } else {
+                    status.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+                    status.style.color = '#e74c3c';
+                }
+            } catch (err) {
+                status.textContent = '❌ Error: ' + err.message;
+                status.style.color = '#e74c3c';
+            }
+        }
+        
+        function saveToProfile() {
+            // Add pending skills to learned data
+            pendingSkills.forEach(skill => {
+                if (!learnedData.skills.includes(skill)) {
+                    learnedData.skills.push(skill);
+                }
+            });
+            
+            localStorage.setItem('kyleMemory', JSON.stringify(learnedData));
+            updateMemoryDisplay();
+            
+            document.getElementById('learned-skills').style.display = 'none';
+            alert('✅ Saved to Kyle\\'s memory! These skills will be available for future generations.');
+            
+            // Also tell the Mind about the new skills
+            if (pendingSkills.length > 0) {
+                mindHistory.push({
+                    role: 'user', 
+                    content: 'I just taught you these new skills from analyzing a URL: ' + pendingSkills.join(', ')
+                });
+                mindHistory.push({
+                    role: 'assistant',
+                    content: 'Excellent! I\\'ve noted these additional skills: ' + pendingSkills.join(', ') + '. I\\'ll incorporate them when generating your applications. The Culture thanks you for the data update.'
+                });
+            }
+            
+            pendingSkills = [];
+        }
+        
+        // Job Analysis
+        let currentJobAnalysis = null;
+        
+        async function analyzeJob() {
+            const company = document.getElementById('job-company').value || 'Unknown Company';
+            const role = document.getElementById('job-role').value || 'Unknown Role';
+            const jobDesc = document.getElementById('job-description').value;
+            const status = document.getElementById('job-status');
+            const resultDiv = document.getElementById('job-result');
+            
+            if (!jobDesc) {
+                alert('Please paste a job description');
+                return;
+            }
+            
+            status.textContent = '🔍 Kyle is analyzing the job posting... (15-30 seconds)';
+            status.style.color = '#e74c3c';
+            resultDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/analyze-job', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        company: company,
+                        role: role,
+                        job_description: jobDesc
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.analysis) {
+                    currentJobAnalysis = {company, role, ...data.analysis};
+                    
+                    const a = data.analysis;
+                    
+                    // Score with color
+                    const score = a.fit_score || '?';
+                    const scoreColor = score >= 7 ? '#2ecc71' : score >= 5 ? '#ffd700' : '#e74c3c';
+                    document.getElementById('fit-score').innerHTML = '<span style="color:' + scoreColor + '">' + score + '/10</span>';
+                    
+                    // Summary
+                    document.getElementById('fit-analysis').innerHTML = a.fit_summary || a.raw || 'Analysis complete';
+                    
+                    // Matching skills
+                    const matchingSkills = a.matching_skills || [];
+                    document.getElementById('matching-skills').innerHTML = matchingSkills.length > 0 
+                        ? matchingSkills.map(s => '<span class="tag" style="background:#2ecc71;">' + s + '</span>').join(' ')
+                        : '<em style="color:#888;">None identified</em>';
+                    
+                    // Gaps
+                    const gaps = a.skill_gaps || [];
+                    const redFlags = a.red_flags || [];
+                    let gapsHtml = '';
+                    if (gaps.length > 0) gapsHtml += '<p><strong>Skills to develop:</strong> ' + gaps.join(', ') + '</p>';
+                    if (redFlags.length > 0) gapsHtml += '<p style="color:#e74c3c;"><strong>Concerns:</strong> ' + redFlags.join(', ') + '</p>';
+                    document.getElementById('skill-gaps').innerHTML = gapsHtml || '<em style="color:#888;">No significant gaps</em>';
+                    
+                    // Recommendations
+                    const recs = a.recommendations || [];
+                    const keywords = a.keywords_to_include || [];
+                    const hook = a.opening_hook || '';
+                    const cvVersion = a.cv_version || 'localisation';
+                    
+                    let recsHtml = '';
+                    if (recs.length > 0) recsHtml += '<ul>' + recs.map(r => '<li>' + r + '</li>').join('') + '</ul>';
+                    if (keywords.length > 0) recsHtml += '<p><strong>Keywords to include:</strong> ' + keywords.map(k => '<span class="tag">' + k + '</span>').join(' ') + '</p>';
+                    if (hook) recsHtml += '<p><strong>Opening hook:</strong> <em>"' + hook + '"</em></p>';
+                    recsHtml += '<p><strong>Recommended CV:</strong> <span class="tag" style="background:#3498db;">' + cvVersion + '</span></p>';
+                    document.getElementById('job-recommendations').innerHTML = recsHtml;
+                    
+                    resultDiv.style.display = 'block';
+                    status.textContent = '✅ Analysis complete!';
+                    status.style.color = '#2ecc71';
+                } else {
+                    status.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+                    status.style.color = '#e74c3c';
+                }
+            } catch (err) {
+                status.textContent = '❌ Error: ' + err.message;
+                status.style.color = '#e74c3c';
+            }
+        }
+        
+        function addToTracker() {
+            if (!currentJobAnalysis) return;
+            
+            document.getElementById('track-company').value = currentJobAnalysis.company || '';
+            document.getElementById('track-role').value = currentJobAnalysis.role || '';
+            document.getElementById('track-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('track-notes').value = 'Fit score: ' + (currentJobAnalysis.fit_score || '?') + '/10';
+            
+            // Switch to tracker tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelector('[data-tab="tracker"]').classList.add('active');
+            document.getElementById('tracker').classList.add('active');
+        }
+        
+        function generateFromAnalysis() {
+            if (!currentJobAnalysis) return;
+            
+            // Pre-fill the letter generator
+            document.getElementById('gen-company').value = currentJobAnalysis.company || '';
+            document.getElementById('gen-role').value = currentJobAnalysis.role || '';
+            document.getElementById('gen-jobdesc').value = document.getElementById('job-description').value;
+            
+            // Switch to letter tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelector('[data-tab="generator"]').classList.add('active');
+            document.getElementById('generator').classList.add('active');
+        }
+        
+        async function quickApply() {
+            await analyzeJob();
+            if (currentJobAnalysis && currentJobAnalysis.fit_score >= 4) {
+                generateFromAnalysis();
+                setTimeout(() => generateAILetter(), 500);
+            }
+        }
+        
+        // Application Tracker
+        let applications = JSON.parse(localStorage.getItem('kyleApplications') || '[]');
+        
+        function updateTrackerStats() {
+            const total = applications.length;
+            const pending = applications.filter(a => a.status === 'applied').length;
+            const interview = applications.filter(a => a.status === 'interview').length;
+            const rejected = applications.filter(a => a.status === 'rejected').length;
+            
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-interview').textContent = interview;
+            document.getElementById('stat-rejected').textContent = rejected;
+            
+            // Update insights
+            if (total >= 3) {
+                const successRate = ((interview / total) * 100).toFixed(0);
+                document.getElementById('tracker-insights').innerHTML = 
+                    '<p>Interview rate: <strong>' + successRate + '%%</strong></p>' +
+                    '<p>Applications this month: <strong>' + applications.filter(a => new Date(a.date) > new Date(Date.now() - 30*24*60*60*1000)).length + '</strong></p>';
+            }
+        }
+        
+        function renderApplications() {
+            const list = document.getElementById('applications-list');
+            if (applications.length === 0) {
+                list.innerHTML = '<em style="color:#888;">No applications tracked yet.</em>';
+                return;
+            }
+            
+            const sorted = [...applications].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            list.innerHTML = sorted.map((app, i) => {
+                const statusColors = {applied: '#ffd700', interview: '#3498db', offer: '#2ecc71', rejected: '#e74c3c'};
+                return '<div class="app-row" style="padding:10px 0; border-bottom:1px solid #333;">' +
+                    '<div style="flex:1;">' +
+                        '<strong>' + app.company + '</strong><br>' +
+                        '<span style="color:#888; font-size:0.85em;">' + app.role + '</span>' +
+                        (app.notes ? '<br><span style="color:#666; font-size:0.8em;">' + app.notes + '</span>' : '') +
+                    '</div>' +
+                    '<div style="text-align:right;">' +
+                        '<span class="tag" style="background:' + statusColors[app.status] + ';">' + app.status.toUpperCase() + '</span><br>' +
+                        '<span style="color:#666; font-size:0.75em;">' + app.date + '</span><br>' +
+                        '<button onclick="updateAppStatus(' + i + ')" style="background:none; border:none; color:#3498db; cursor:pointer; font-size:0.75em;">Update</button> ' +
+                        '<button onclick="deleteApp(' + i + ')" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size:0.75em;">Delete</button>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+        
+        function addApplication() {
+            const company = document.getElementById('track-company').value;
+            const role = document.getElementById('track-role').value;
+            const date = document.getElementById('track-date').value || new Date().toISOString().split('T')[0];
+            const status = document.getElementById('track-status').value;
+            const notes = document.getElementById('track-notes').value;
+            
+            if (!company || !role) {
+                alert('Please enter company and role');
+                return;
+            }
+            
+            applications.push({company, role, date, status, notes});
+            localStorage.setItem('kyleApplications', JSON.stringify(applications));
+            
+            // Clear form
+            document.getElementById('track-company').value = '';
+            document.getElementById('track-role').value = '';
+            document.getElementById('track-notes').value = '';
+            
+            updateTrackerStats();
+            renderApplications();
+            
+            alert('✅ Application added!');
+        }
+        
+        function updateAppStatus(index) {
+            const newStatus = prompt('New status (applied/interview/offer/rejected):', applications[index].status);
+            if (newStatus && ['applied', 'interview', 'offer', 'rejected'].includes(newStatus)) {
+                applications[index].status = newStatus;
+                localStorage.setItem('kyleApplications', JSON.stringify(applications));
+                updateTrackerStats();
+                renderApplications();
+            }
+        }
+        
+        function deleteApp(index) {
+            if (confirm('Delete this application?')) {
+                applications.splice(index, 1);
+                localStorage.setItem('kyleApplications', JSON.stringify(applications));
+                updateTrackerStats();
+                renderApplications();
+            }
+        }
+        
+        // Initialize tracker
+        updateTrackerStats();
+        renderApplications();
+        
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js');
         }
@@ -1059,6 +1498,232 @@ Keep it factual and concise. If you're uncertain about something, say so. Format
         if response.status_code == 200:
             result = response.json()
             return jsonify({'success': True, 'research': result['content'][0]['text']})
+        else:
+            return jsonify({'error': f'API error: {response.status_code}'}), 500
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/analyze-job', methods=['POST'])
+@requires_auth
+def api_analyze_job():
+    """Analyze a job description for fit"""
+    if not ANTHROPIC_API_KEY:
+        return jsonify({'error': 'API key not configured'}), 500
+    
+    data = request.json
+    company = data.get('company', '')
+    role = data.get('role', '')
+    job_description = data.get('job_description', '')
+    
+    if not job_description:
+        return jsonify({'error': 'Job description required'}), 400
+    
+    charles_profile = """
+CHARLES SIBOTO'S PROFILE:
+
+EXPERIENCE (10+ years):
+- English Educator, ASC Göttingen (2025-Present)
+- Contributing Writer, Bizcommunity.com (2012-2025) - 12+ years, grew readership 35%
+- Online Editor, Software & Support Media (2024)
+- Editor & Project Manager, Jonathan Ball Publishers (2021-2022) - 20+ book titles/year
+- Junior Editor, NB Publishers (2013-2017) - digital publishing, international co-productions
+
+SKILLS:
+- Core: Editing, Proofreading, Publishing, Project Management, Content Creation, Teaching
+- Technical: Python, Agile Scrum, Git, Data Visualization, CMS, WordPress
+- Languages: English (Native), German (Advanced - 7 years in Germany)
+
+EDUCATION:
+- AI Project Management bootcamp, neuefische GmbH (2025)
+- BA Language Practice, University of Johannesburg
+- Advanced Copy Editing & Proofreading certification
+
+PUBLISHED AUTHOR:
+- 3 children's books with Penguin Random House South Africa
+- Kwasuka Sukela series (African folklore)
+
+GAMING BACKGROUND:
+- Lifelong Nintendo enthusiast
+- 12+ years writing game reviews and entertainment coverage
+"""
+
+    try:
+        response = requests.post(
+            'https://api.anthropic.com/v1/messages',
+            headers={
+                'Content-Type': 'application/json',
+                'x-api-key': ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            json={
+                'model': 'claude-sonnet-4-20250514',
+                'max_tokens': 2000,
+                'messages': [{'role': 'user', 'content': f"""Analyze this job posting for Charles Siboto's fit.
+
+COMPANY: {company}
+ROLE: {role}
+
+JOB DESCRIPTION:
+{job_description}
+
+{charles_profile}
+
+Please provide a structured analysis in this EXACT JSON format:
+{{
+    "fit_score": <number 1-10>,
+    "fit_summary": "<2-3 sentence summary of overall fit>",
+    "matching_skills": ["<skill 1>", "<skill 2>", ...],
+    "skill_gaps": ["<gap 1>", "<gap 2>", ...],
+    "red_flags": ["<concern 1>", ...],
+    "recommendations": [
+        "<specific recommendation 1>",
+        "<specific recommendation 2>",
+        ...
+    ],
+    "cv_version": "<localisation|language|product>",
+    "keywords_to_include": ["<keyword 1>", "<keyword 2>", ...],
+    "opening_hook": "<suggested opening line for cover letter>"
+}}
+
+Be honest and specific. If there are gaps, say so. Score fairly - 7+ means good fit, 5-6 means possible with right framing, below 5 means stretch.
+Return ONLY the JSON, no other text."""}]
+            },
+            timeout=60
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            analysis_text = result['content'][0]['text']
+            
+            # Try to parse JSON
+            try:
+                import re
+                json_match = re.search(r'\{.*\}', analysis_text, re.DOTALL)
+                if json_match:
+                    analysis = json.loads(json_match.group())
+                    return jsonify({'success': True, 'analysis': analysis})
+                else:
+                    return jsonify({'success': True, 'analysis': {'raw': analysis_text}})
+            except:
+                return jsonify({'success': True, 'analysis': {'raw': analysis_text}})
+        else:
+            return jsonify({'error': f'API error: {response.status_code}'}), 500
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/analyze-url', methods=['POST'])
+@requires_auth
+def api_analyze_url():
+    """Analyze a URL to learn more about Charles"""
+    if not ANTHROPIC_API_KEY:
+        return jsonify({'error': 'API key not configured'}), 500
+    
+    data = request.json
+    url = data.get('url', '')
+    
+    if not url:
+        return jsonify({'error': 'URL required'}), 400
+    
+    # Current profile context for comparison
+    current_profile = """
+CHARLES'S CURRENT KNOWN PROFILE:
+- Editor, Writer, Project Manager with 10+ years experience
+- Published children's author (Penguin Random House SA)
+- Living in Germany since 2018, advanced German
+- AI Project Management bootcamp (neuefische GmbH)
+- Skills: Editing, Publishing, Project Management, Python, Agile Scrum
+- Gaming enthusiast (Nintendo, Zelda, Metroid, Fire Emblem)
+- Experience at: ASC Göttingen, Bizcommunity, Software & Support Media, Jonathan Ball Publishers, NB Publishers
+"""
+    
+    try:
+        response = requests.post(
+            'https://api.anthropic.com/v1/messages',
+            headers={
+                'Content-Type': 'application/json',
+                'x-api-key': ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            json={
+                'model': 'claude-sonnet-4-20250514',
+                'max_tokens': 2000,
+                'messages': [{'role': 'user', 'content': f"""You are Kyle, a Culture Mind helping Charles Siboto with his job search. 
+
+Please fetch and analyze the content at this URL: {url}
+
+This should be content by or about Charles Siboto. Analyze it and extract:
+
+1. **Content Summary**: What is this page/article about? (2-3 sentences)
+
+2. **New Skills Identified**: Any skills, tools, or competencies demonstrated that aren't in his current profile
+   - Format as a bullet list
+   - Be specific (e.g., "Video editing" not just "media skills")
+
+3. **Writing Style Insights**: What does this reveal about his writing voice, expertise areas, or professional brand?
+
+4. **Achievements/Accomplishments**: Any specific achievements, metrics, or accomplishments mentioned
+
+5. **Suggested Profile Updates**: Specific additions or changes to make to his profile based on this content
+   - Format as actionable items
+
+6. **Keywords for Applications**: Industry keywords or phrases that could strengthen job applications
+
+{current_profile}
+
+If you cannot access the URL or it's not about Charles, explain what you found instead.
+
+Be concise but thorough. This analysis will help Kyle better represent Charles in future applications."""}]
+            },
+            timeout=90
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            analysis = result['content'][0]['text']
+            
+            # Extract skills for the learning feature
+            skills_prompt = f"""Based on this analysis, extract ONLY the new skills as a JSON array of strings. 
+Include skills, tools, competencies that should be added to Charles's profile.
+Return ONLY a valid JSON array, nothing else. Example: ["Skill 1", "Skill 2", "Skill 3"]
+
+Analysis:
+{analysis}"""
+            
+            skills_response = requests.post(
+                'https://api.anthropic.com/v1/messages',
+                headers={
+                    'Content-Type': 'application/json',
+                    'x-api-key': ANTHROPIC_API_KEY,
+                    'anthropic-version': '2023-06-01'
+                },
+                json={
+                    'model': 'claude-sonnet-4-20250514',
+                    'max_tokens': 500,
+                    'messages': [{'role': 'user', 'content': skills_prompt}]
+                },
+                timeout=30
+            )
+            
+            new_skills = []
+            if skills_response.status_code == 200:
+                try:
+                    skills_text = skills_response.json()['content'][0]['text'].strip()
+                    # Try to parse as JSON
+                    import re
+                    json_match = re.search(r'\[.*\]', skills_text, re.DOTALL)
+                    if json_match:
+                        new_skills = json.loads(json_match.group())
+                except:
+                    pass
+            
+            return jsonify({
+                'success': True, 
+                'analysis': analysis,
+                'new_skills': new_skills,
+                'url': url
+            })
         else:
             return jsonify({'error': f'API error: {response.status_code}'}), 500
             
