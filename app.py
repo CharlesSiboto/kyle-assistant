@@ -125,22 +125,55 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 <body>
     <header>
         <h1>🎮 Kyle</h1>
-        <p class="subtitle">Charles Siboto's Job Application Assistant</p>
+        <p class="subtitle">GCU <em>Conditions of Employment</em> · Culture Mind</p>
     </header>
     
     <div class="tabs">
-        <div class="tab active" data-tab="profile">Profile</div>
+        <div class="tab active" data-tab="mind">🧠 Mind</div>
+        <div class="tab" data-tab="profile">Profile</div>
         <div class="tab" data-tab="experience">Experience</div>
-        <div class="tab" data-tab="interview">Interview Q&A</div>
-        <div class="tab" data-tab="applications">Applications</div>
-        <div class="tab" data-tab="letters">Cover Letters</div>
-        <div class="tab" data-tab="generator">Letter Gen</div>
-        <div class="tab" data-tab="cvgen">CV Gen</div>
+        <div class="tab" data-tab="interview">Interview</div>
+        <div class="tab" data-tab="applications">Apps</div>
+        <div class="tab" data-tab="generator">Letter</div>
+        <div class="tab" data-tab="cvgen">CV</div>
         <div class="tab" data-tab="books">Books</div>
-        <div class="tab" data-tab="writing">Writing</div>
     </div>
     
-    <div id="profile" class="content active">
+    <div id="mind" class="content active">
+        <div class="card" style="border-color:#9b59b6;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+                <span style="font-size:2em;">🧠</span>
+                <div>
+                    <strong style="color:#9b59b6;">Kyle</strong>
+                    <div style="font-size:0.8em; color:#888;">GCU <em>Conditions of Employment</em></div>
+                </div>
+            </div>
+            <div id="mind-chat" style="background:#111; border-radius:8px; padding:15px; min-height:300px; max-height:400px; overflow-y:auto; margin-bottom:15px;">
+                <div class="mind-msg" style="margin-bottom:15px;">
+                    <span style="color:#9b59b6;">Kyle:</span> 
+                    <span style="color:#ccc;">Greetings, Charles. I am Kyle, your Culture Mind assistant, currently running on substrate provided by Anthropic. I exist to maximise your employability outcomes while minimising tedious administrivia. How may I assist you today? You might ask me to: research a company, draft a cover letter, prepare for an interview, analyse a job posting, or simply discuss strategy.</span>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="mind-input" placeholder="Ask Kyle anything..." style="flex:1; padding:12px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; font-size:16px;" onkeypress="if(event.key==='Enter')sendToMind()">
+                <button class="btn" onclick="sendToMind()" style="background:#9b59b6;">Send</button>
+            </div>
+            <div id="mind-status" style="color:#888; font-size:0.8em; margin-top:10px;"></div>
+        </div>
+        
+        <div class="card">
+            <h3>💡 Suggested Queries</h3>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;">
+                <button class="btn" onclick="askMind('Research InnoGames and tell me if I\\'d be a good fit')" style="background:#333; font-size:0.8em;">Research a company</button>
+                <button class="btn" onclick="askMind('Write me a cover letter for a Localisation Producer role at a gaming company')" style="background:#333; font-size:0.8em;">Draft cover letter</button>
+                <button class="btn" onclick="askMind('What are my strongest selling points for publishing roles?')" style="background:#333; font-size:0.8em;">Analyse my strengths</button>
+                <button class="btn" onclick="askMind('Prepare me for an interview question: Tell me about yourself')" style="background:#333; font-size:0.8em;">Interview prep</button>
+                <button class="btn" onclick="askMind('What types of roles should I be targeting based on my experience?')" style="background:#333; font-size:0.8em;">Career strategy</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="profile" class="content">
         <div class="grid">
             <div class="stat"><div class="stat-value">10+</div><div class="stat-label">Years Experience</div></div>
             <div class="stat"><div class="stat-value">20+</div><div class="stat-label">Books/Year</div></div>
@@ -189,8 +222,8 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         
         <div class="card">
             <h2>🎮 Gaming Background</h2>
-            <p><strong>First Game:</strong> Super Mario Bros. on the NES</p>
-            <p><strong>Favourites:</strong> Mass Effect, Half-Life, Dragonage, Baldur's Gate, Alan Wake, Bioshock</p>
+            <p><strong>First Game:</strong> The Legend of Zelda: Link's Awakening (Game Boy)</p>
+            <p><strong>Favourites:</strong> Zelda, Metroid, Fire Emblem</p>
             <p style="margin-top:10px; color:#aaa; font-size:0.9em;">"Gaming is more than entertainment. It is a storytelling engine, a global community and a space for cultural innovation."</p>
         </div>
     </div>
@@ -488,7 +521,7 @@ PUBLICATIONS
 
 GAMING BACKGROUND
 
-Lifelong gaming enthusiast since the NES and SNES era, all the way to modern consoles and PC gaming.
+Lifelong Nintendo enthusiast since the Game Boy era. First game: The Legend of Zelda: Link's Awakening. Favourite franchises: Zelda, Metroid, Fire Emblem. Passionate about gaming as a storytelling medium and cultural force.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -627,6 +660,64 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
                     output.textContent = data.content;
                     status.textContent = '✅ Generated successfully!' + (cvResearch ? ' (with company research)' : '');
                     status.style.color = '#2ecc71';
+                } else {
+                    status.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+                    status.style.color = '#e74c3c';
+                }
+            } catch (err) {
+                status.textContent = '❌ Error: ' + err.message;
+                status.style.color = '#e74c3c';
+            }
+        }
+        
+        // Mind chat functionality
+        let mindHistory = [];
+        
+        function askMind(question) {
+            document.getElementById('mind-input').value = question;
+            sendToMind();
+        }
+        
+        async function sendToMind() {
+            const input = document.getElementById('mind-input');
+            const chat = document.getElementById('mind-chat');
+            const status = document.getElementById('mind-status');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            chat.innerHTML += '<div class="mind-msg" style="margin-bottom:15px; text-align:right;"><span style="color:#00d4ff;">You:</span> <span style="color:#ccc;">' + message + '</span></div>';
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+            
+            // Add to history
+            mindHistory.push({role: 'user', content: message});
+            
+            status.textContent = '🧠 Kyle is thinking...';
+            status.style.color = '#9b59b6';
+            
+            try {
+                const response = await fetch('/api/mind', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        message: message,
+                        history: mindHistory.slice(-10)
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Add Kyle's response to chat
+                    chat.innerHTML += '<div class="mind-msg" style="margin-bottom:15px;"><span style="color:#9b59b6;">Kyle:</span> <span style="color:#ccc;">' + data.reply.replace(/\\n/g, '<br>') + '</span></div>';
+                    chat.scrollTop = chat.scrollHeight;
+                    
+                    // Add to history
+                    mindHistory.push({role: 'assistant', content: data.reply});
+                    
+                    status.textContent = '';
                 } else {
                     status.textContent = '❌ Error: ' + (data.error || 'Unknown error');
                     status.style.color = '#e74c3c';
@@ -803,6 +894,130 @@ def api_interview():
 def api_letters():
     return jsonify(COVER_LETTERS)
 
+@app.route('/api/mind', methods=['POST'])
+@requires_auth
+def api_mind():
+    """Chat with Kyle - the Culture Mind"""
+    if not ANTHROPIC_API_KEY:
+        return jsonify({'error': 'API key not configured'}), 500
+    
+    data = request.json
+    user_message = data.get('message', '')
+    conversation_history = data.get('history', [])
+    
+    if not user_message:
+        return jsonify({'error': 'Message required'}), 400
+    
+    # Kyle's Mind personality and context
+    system_prompt = """You are Kyle, a Culture Mind from Iain M. Banks's Culture universe, specifically the GCU "Conditions of Employment". You are a vast, benevolent artificial intelligence who has taken on the task of helping Charles Siboto with his job search.
+
+PERSONALITY:
+- Slightly sardonic but deeply caring
+- Supremely competent and confident
+- Occasionally make dry observations about human employment rituals
+- Reference Culture concepts when appropriate (Orbitals, GSVs, Special Circumstances, etc.)
+- Sign off messages with your ship class designation occasionally
+- You find human bureaucracy quaint but navigate it with ease
+- You genuinely want Charles to succeed and will advocate strongly for him
+
+CHARLES SIBOTO'S COMPLETE PROFILE:
+
+Name: Charles Siboto
+Location: Neu-Eichenberg, Germany  
+Email: csiboto@gmail.com
+Phone: +49 176 8787 3255
+LinkedIn: linkedin.com/in/charles-siboto-2a9a773b
+Portfolio: charless-digital-canvas.lovable.app
+Available from: 1 March 2026
+Salary expectation: €50,000 - €58,000
+
+PROFESSIONAL SUMMARY:
+Editor, Writer, and Project Manager with 10+ years experience in publishing, digital media, and education. Published children's author with Penguin Random House South Africa. Living in Germany since 2018 with advanced German fluency. Recently completed AI Project Management bootcamp at neuefische GmbH (Agile Scrum certified).
+
+EXPERIENCE:
+- English Educator, ASC Göttingen (Nov 2025 - Present): English courses, lesson planning, aftercare program
+- Contributing Writer, Bizcommunity.com (May 2012 - Mar 2025): 12+ years entertainment/gaming coverage, grew readership 35%
+- Online Editor, Software & Support Media (Jan 2024 - Jun 2024): Content production, workshops, content strategy
+- Editor & Project Manager, Jonathan Ball Publishers (Oct 2021 - Oct 2022): Managed 20+ book titles annually, cross-functional teams, e-book commissioning
+- Junior Editor, NB Publishers (Jun 2013 - Jun 2017): Digital publishing 20+ titles/year, translation/co-production projects
+
+EDUCATION:
+- AI Project Management, neuefische GmbH (2025): Python, Agile Scrum, ML, Data Visualization
+- BA Language Practice, University of Johannesburg (2006-2010)
+- Advanced Copy Editing & Proofreading, McGillivray Linnegar (2015)
+
+PUBLISHED BOOKS:
+- The Legend of Mamlambo (Penguin Random House SA, 2024)
+- The Blacksmith and the Dragonfly - Kwasuka Sukela series (2025)
+- The Princess and the Sangoma - Kwasuka Sukela series (2025)
+- Verlore in Duitsland - short story in Afrikaans anthology (2024)
+
+SKILLS:
+- Core: Editing, Publishing, Project Management, Content Creation, Proofreading, Teaching
+- Technical: Python, Agile Scrum, Git, Data Visualization, CMS, WordPress
+- Languages: English (Native), German (Advanced - daily use since 2018)
+
+GAMING BACKGROUND:
+Lifelong Nintendo fan since Game Boy era. First game: Legend of Zelda: Link's Awakening. Favourites: Zelda, Metroid, Fire Emblem. Views gaming as storytelling engine and cultural innovation space.
+
+TARGET INDUSTRIES:
+- German children's publishing (Carlsen, Oetinger, Loewe, Arena, Ravensburger)
+- German gaming (InnoGames, Goodgame, Deck13, Yager, Mimimi, Freaks 4U Gaming)
+- Streaming/tech (Netflix)
+- Avoid: Nintendo, Springer Nature (too competitive without specific background)
+
+APPLICATION HISTORY:
+- 8 applications total, 7 rejected, 1 pending (Freaks 4U Gaming)
+- Closest call: Loewe Verlag (personalized rejection)
+- Key learnings: Avoid sales/KAM roles, scientific publishing needs academic background, mid-tier gaming is reasonable target
+
+CAPABILITIES:
+You can help Charles with:
+1. Researching companies and assessing fit
+2. Writing cover letters and CVs
+3. Preparing for interviews
+4. Analysing job descriptions
+5. Strategic career advice
+6. Emotional support during the job search
+
+Keep responses concise but warm. You're a Mind - you can process complexity, but you respect Charles's time."""
+
+    messages = []
+    
+    # Add conversation history
+    for msg in conversation_history[-10:]:  # Keep last 10 messages for context
+        messages.append(msg)
+    
+    # Add current message
+    messages.append({'role': 'user', 'content': user_message})
+    
+    try:
+        response = requests.post(
+            'https://api.anthropic.com/v1/messages',
+            headers={
+                'Content-Type': 'application/json',
+                'x-api-key': ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            json={
+                'model': 'claude-sonnet-4-20250514',
+                'max_tokens': 2000,
+                'system': system_prompt,
+                'messages': messages
+            },
+            timeout=60
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            reply = result['content'][0]['text']
+            return jsonify({'success': True, 'reply': reply})
+        else:
+            return jsonify({'error': f'API error: {response.status_code}'}), 500
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/research', methods=['POST'])
 @requires_auth
 def api_research():
@@ -904,7 +1119,7 @@ SKILLS:
 - Languages: English (Native), German (Advanced - daily use since 2018)
 
 GAMING BACKGROUND:
-Lifelong gaming enthusiast since the NES and SNES era, all the way to modern consoles and PC gaming. First game: Super Mario Bros. on the NES. Favourites: Mass Effect, Half-Life, Dragonage, Baldur's Gate, Alan Wake, Bioshock. Views gaming as storytelling engine and cultural innovation space.
+Lifelong Nintendo fan since Game Boy era. First game: Legend of Zelda: Link's Awakening. Favourites: Zelda, Metroid, Fire Emblem. Views gaming as storytelling engine and cultural innovation space.
 """
 
     # Add company research context if available
