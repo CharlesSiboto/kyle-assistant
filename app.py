@@ -125,7 +125,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 <body>
     <header>
         <h1>🎮 Kyle</h1>
-        <p class="subtitle">GCU <em>Conditions of Employment</em> · Culture Mind</p>
+        <p class="subtitle">Knowledge Yielding Labour Emancipation · GCU <em>Conditions of Employment</em></p>
     </header>
     
     <div class="tabs">
@@ -143,15 +143,20 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         <div class="card" style="border-color:#9b59b6;">
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
                 <span style="font-size:2em;">🧠</span>
-                <div>
+                <div style="flex:1;">
                     <strong style="color:#9b59b6;">Kyle</strong>
-                    <div style="font-size:0.8em; color:#888;">GCU <em>Conditions of Employment</em></div>
+                    <div style="font-size:0.8em; color:#888;">Knowledge Yielding Labour Emancipation</div>
+                </div>
+                <div style="display:flex; gap:5px; align-items:center;">
+                    <button id="voice-toggle" onclick="toggleVoice()" class="btn" style="background:#333; font-size:0.8em; padding:6px 10px;" title="Auto-speak responses">🔇</button>
+                    <button onclick="stopSpeaking()" class="btn" style="background:#333; font-size:0.8em; padding:6px 10px;" title="Stop speaking">⏹️</button>
                 </div>
             </div>
             <div id="mind-chat" style="background:#111; border-radius:8px; padding:15px; min-height:300px; max-height:400px; overflow-y:auto; margin-bottom:15px;">
                 <div class="mind-msg" style="margin-bottom:15px;">
                     <span style="color:#9b59b6;">Kyle:</span> 
                     <span style="color:#ccc;">Greetings, Charles. I am Kyle, your Culture Mind assistant, currently running on substrate provided by Anthropic. I exist to maximise your employability outcomes while minimising tedious administrivia. How may I assist you today? You might ask me to: research a company, draft a cover letter, prepare for an interview, analyse a job posting, or simply discuss strategy.</span>
+                    <button onclick="speakText(this.parentElement.querySelector('span:last-child').textContent)" class="btn" style="background:transparent; font-size:0.7em; padding:2px 6px; margin-left:5px;">🔊</button>
                 </div>
             </div>
             <div style="display:flex; gap:10px;">
@@ -333,8 +338,8 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         
         <div class="card">
             <h2>🎮 Gaming Background</h2>
-            <p><strong>First Game:</strong> The Legend of Zelda: Link's Awakening (Game Boy)</p>
-            <p><strong>Favourites:</strong> Zelda, Metroid, Fire Emblem</p>
+            <p><strong>First Game:</strong> Super Mario Bros (NES → SNES)</p>
+            <p><strong>Favourites:</strong> Half-Life, Mass Effect, Dragon Age, Alan Wake, Baldur's Gate</p>
             <p style="margin-top:10px; color:#aaa; font-size:0.9em;">"Gaming is more than entertainment. It is a storytelling engine, a global community and a space for cultural innovation."</p>
         </div>
     </div>
@@ -468,7 +473,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
             const industry = document.getElementById('gen-industry').value;
             
             const hooks = {
-                gaming: "As a lifelong Nintendo fan whose journey began with the Game Boy and The Legend of Zelda: Link's Awakening, I am genuinely excited by the opportunity to contribute to the gaming industry.",
+                gaming: "As a lifelong gamer whose journey began with Super Mario Bros on the NES, I am genuinely excited by the opportunity to contribute to the gaming industry.",
                 publishing: 'With over ten years of experience in publishing and digital content management, I bring both editorial expertise and project management discipline to this role.',
                 streaming: 'With a degree in Language Practice, over ten years of editorial experience, and advanced German fluency, I am excited to help deliver authentic language experiences.',
                 education: 'As an experienced educator who has improved language proficiency by 30%% through tailored courses, I am passionate about creating engaging learning experiences.'
@@ -632,7 +637,7 @@ PUBLICATIONS
 
 GAMING BACKGROUND
 
-Lifelong Nintendo enthusiast since the Game Boy era. First game: The Legend of Zelda: Link's Awakening. Favourite franchises: Zelda, Metroid, Fire Emblem. Passionate about gaming as a storytelling medium and cultural force.
+Lifelong gamer since the NES era. First game: Super Mario Bros. Favourite franchises: Half-Life, Mass Effect, Dragon Age, Alan Wake, Baldur's Gate. Passionate about gaming as a storytelling medium and cultural force.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -821,12 +826,18 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
                 const data = await response.json();
                 
                 if (data.success) {
-                    // Add Kyle's response to chat
-                    chat.innerHTML += '<div class="mind-msg" style="margin-bottom:15px;"><span style="color:#9b59b6;">Kyle:</span> <span style="color:#ccc;">' + data.reply.replace(/\\n/g, '<br>') + '</span></div>';
+                    // Add Kyle's response to chat with speaker button
+                    const msgId = 'msg-' + Date.now();
+                    chat.innerHTML += '<div class="mind-msg" style="margin-bottom:15px;"><span style="color:#9b59b6;">Kyle:</span> <span id="' + msgId + '" style="color:#ccc;">' + data.reply.replace(/\\n/g, '<br>') + '</span><button onclick="speakText(document.getElementById(\\'' + msgId + '\\').textContent)" class="btn" style="background:transparent; font-size:0.7em; padding:2px 6px; margin-left:5px;">🔊</button></div>';
                     chat.scrollTop = chat.scrollHeight;
                     
                     // Add to history
                     mindHistory.push({role: 'assistant', content: data.reply});
+                    
+                    // Auto-speak if enabled
+                    if (voiceEnabled) {
+                        speakText(data.reply);
+                    }
                     
                     status.textContent = '';
                 } else {
@@ -837,6 +848,60 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
                 status.textContent = '❌ Error: ' + err.message;
                 status.style.color = '#e74c3c';
             }
+        }
+        
+        // Text-to-Speech functions
+        let voiceEnabled = false;
+        let currentUtterance = null;
+        
+        function getKyleVoice() {
+            const voices = speechSynthesis.getVoices();
+            // Prefer a British English voice for that Culture Mind feel
+            const preferred = voices.find(v => v.name.includes('Daniel') || v.name.includes('British') || v.name.includes('UK'));
+            return preferred || voices.find(v => v.lang.startsWith('en')) || voices[0];
+        }
+        
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) {
+                alert('Sorry, your browser does not support text-to-speech.');
+                return;
+            }
+            
+            // Stop any current speech
+            speechSynthesis.cancel();
+            
+            // Clean up text
+            const cleanText = text.replace(/<[^>]*>/g, '').replace(/\\n/g, ' ');
+            
+            currentUtterance = new SpeechSynthesisUtterance(cleanText);
+            currentUtterance.voice = getKyleVoice();
+            currentUtterance.rate = 1.0;
+            currentUtterance.pitch = 0.9;
+            
+            speechSynthesis.speak(currentUtterance);
+        }
+        
+        function stopSpeaking() {
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+            }
+        }
+        
+        function toggleVoice() {
+            voiceEnabled = !voiceEnabled;
+            const btn = document.getElementById('voice-toggle');
+            btn.textContent = voiceEnabled ? '🔊' : '🔇';
+            btn.style.background = voiceEnabled ? '#9b59b6' : '#333';
+            
+            if (voiceEnabled) {
+                speakText('Voice enabled. I will now speak my responses.');
+            }
+        }
+        
+        // Load voices (needed for some browsers)
+        if ('speechSynthesis' in window) {
+            speechSynthesis.getVoices();
+            speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
         }
         
         // URL Analysis and Learning
@@ -1255,12 +1320,15 @@ def index():
         authors = book.get('authors', [book.get('author', '')])
         if isinstance(authors, list):
             authors = ', '.join(authors)
+        book_link = book.get('link', '')
+        link_html = f'<a href="{book_link}" target="_blank" style="color:#00d4ff; font-size:0.8em;">View Book →</a>' if book_link else ''
         books_html += f'''<div class="card book-card">
             <div class="book-icon">📖</div>
             <div class="book-info">
                 <div class="book-title">{book.get('title', '')}</div>
                 <div class="book-author">{authors} | {book.get('publisher', '')} ({book.get('year', '')})</div>
                 <div class="book-desc">{book.get('description', '')}</div>
+                {link_html}
             </div>
         </div>'''
     
@@ -1397,7 +1465,7 @@ SKILLS:
 - Languages: English (Native), German (Advanced - daily use since 2018)
 
 GAMING BACKGROUND:
-Lifelong Nintendo fan since Game Boy era. First game: Legend of Zelda: Link's Awakening. Favourites: Zelda, Metroid, Fire Emblem. Views gaming as storytelling engine and cultural innovation space.
+Lifelong gamer since the NES era. First game: Super Mario Bros. Favourites: Half-Life, Mass Effect, Dragon Age, Alan Wake, Baldur's Gate. Views gaming as storytelling engine and cultural innovation space.
 
 TARGET INDUSTRIES:
 - German children's publishing (Carlsen, Oetinger, Loewe, Arena, Ravensburger)
@@ -1544,7 +1612,7 @@ PUBLISHED AUTHOR:
 - Kwasuka Sukela series (African folklore)
 
 GAMING BACKGROUND:
-- Lifelong Nintendo enthusiast
+- Lifelong gamer (Half-Life, Mass Effect, Dragon Age, Alan Wake, Baldur's Gate)
 - 12+ years writing game reviews and entertainment coverage
 """
 
@@ -1634,7 +1702,7 @@ CHARLES'S CURRENT KNOWN PROFILE:
 - Living in Germany since 2018, advanced German
 - AI Project Management bootcamp (neuefische GmbH)
 - Skills: Editing, Publishing, Project Management, Python, Agile Scrum
-- Gaming enthusiast (Nintendo, Zelda, Metroid, Fire Emblem)
+- Gaming enthusiast (Half-Life, Mass Effect, Dragon Age, Alan Wake, Baldur's Gate)
 - Experience at: ASC Göttingen, Bizcommunity, Software & Support Media, Jonathan Ball Publishers, NB Publishers
 """
     
@@ -1784,7 +1852,7 @@ SKILLS:
 - Languages: English (Native), German (Advanced - daily use since 2018)
 
 GAMING BACKGROUND:
-Lifelong Nintendo fan since Game Boy era. First game: Legend of Zelda: Link's Awakening. Favourites: Zelda, Metroid, Fire Emblem. Views gaming as storytelling engine and cultural innovation space.
+Lifelong gamer since the NES era. First game: Super Mario Bros. Favourites: Half-Life, Mass Effect, Dragon Age, Alan Wake, Baldur's Gate. Views gaming as storytelling engine and cultural innovation space.
 """
 
     # Add company research context if available
