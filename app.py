@@ -160,6 +160,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
                 </div>
             </div>
             <div style="display:flex; gap:10px;">
+                <button id="mic-btn" onclick="toggleVoiceInput()" class="btn" style="background:#333; padding:12px;" title="Voice input">🎤</button>
                 <input type="text" id="mind-input" placeholder="Ask Kyle anything..." style="flex:1; padding:12px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; font-size:16px;" onkeypress="if(event.key==='Enter')sendToMind()">
                 <button class="btn" onclick="sendToMind()" style="background:#9b59b6;">Send</button>
             </div>
@@ -409,6 +410,8 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
                 <button class="btn" onclick="generateLetter()">Quick Generate</button>
                 <button class="btn" onclick="generateAILetter()" style="background:#9b59b6;">🤖 AI Generate</button>
                 <button class="btn" onclick="copyLetter()" style="background:#ffd700;">Copy</button>
+                <button class="btn" onclick="downloadAsTxt('generated-letter', 'Cover_Letter')" style="background:#2ecc71;">📄 Download</button>
+                <button class="btn" onclick="emailApplication()" style="background:#e74c3c;">📧 Email</button>
             </div>
             <div id="ai-status" style="color:#888; font-size:0.85em; margin-top:10px;"></div>
             <div id="generated-letter"></div>
@@ -439,6 +442,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
                 <button class="btn" onclick="generateCV()">Quick Generate</button>
                 <button class="btn" onclick="generateAICV()" style="background:#9b59b6;">🤖 AI Generate</button>
                 <button class="btn" onclick="copyCV()" style="background:#ffd700;">Copy</button>
+                <button class="btn" onclick="downloadAsTxt('generated-cv', 'CV')" style="background:#2ecc71;">📄 Download</button>
             </div>
             <div id="cv-status" style="color:#888; font-size:0.85em; margin-top:10px;"></div>
             <div id="generated-cv" style="background: #111; padding: 15px; border-radius: 8px; white-space: pre-wrap; font-size: 0.8em; line-height: 1.4; margin-top: 15px; max-height: 500px; overflow-y: auto;"></div>
@@ -902,6 +906,108 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
         if ('speechSynthesis' in window) {
             speechSynthesis.getVoices();
             speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+        }
+        
+        // Voice Input (Speech-to-Text)
+        let recognition = null;
+        let isListening = false;
+        
+        function toggleVoiceInput() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('Sorry, your browser does not support voice input. Try Chrome.');
+                return;
+            }
+            
+            if (isListening) {
+                recognition.stop();
+                return;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.lang = 'en-GB';
+            
+            const input = document.getElementById('mind-input');
+            const micBtn = document.getElementById('mic-btn');
+            
+            recognition.onstart = function() {
+                isListening = true;
+                micBtn.style.background = '#e74c3c';
+                micBtn.textContent = '🔴';
+                input.placeholder = 'Listening...';
+            };
+            
+            recognition.onresult = function(event) {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                input.value = transcript;
+            };
+            
+            recognition.onend = function() {
+                isListening = false;
+                micBtn.style.background = '#333';
+                micBtn.textContent = '🎤';
+                input.placeholder = 'Ask Kyle anything...';
+                
+                // Auto-send if we got something
+                if (input.value.trim()) {
+                    sendToMind();
+                }
+            };
+            
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                isListening = false;
+                micBtn.style.background = '#333';
+                micBtn.textContent = '🎤';
+                input.placeholder = 'Ask Kyle anything...';
+            };
+            
+            recognition.start();
+        }
+        
+        // Download as text file
+        function downloadAsTxt(elementId, filename) {
+            const content = document.getElementById(elementId).textContent;
+            if (!content) {
+                alert('Nothing to download. Generate content first.');
+                return;
+            }
+            
+            const company = document.getElementById(elementId === 'generated-letter' ? 'gen-company' : 'cv-company').value || 'Company';
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Charles_Siboto_' + filename + '_' + company.replace(/\\s+/g, '_') + '.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Email application (opens email client)
+        function emailApplication() {
+            const letter = document.getElementById('generated-letter').textContent;
+            const company = document.getElementById('gen-company').value || 'Company';
+            const role = document.getElementById('gen-role').value || 'Position';
+            
+            if (!letter) {
+                alert('Generate a cover letter first.');
+                return;
+            }
+            
+            const subject = encodeURIComponent('Application for ' + role + ' - Charles Siboto');
+            const body = encodeURIComponent(letter + '\\n\\n---\\nPlease find my CV attached.');
+            
+            // Open default email client
+            window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
+            
+            alert('Email client opened! Remember to:\\n1. Add the recipient email\\n2. Attach your CV\\n3. Review and send!');
         }
         
         // URL Analysis and Learning
