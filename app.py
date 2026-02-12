@@ -47,7 +47,7 @@ def requires_auth(f):
 
 # Use %% to escape % in CSS, and %(name)s for variables
 HTML_TEMPLATE = '''<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <title>Kyle</title>
     <meta charset="UTF-8">
@@ -57,85 +57,194 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
     <meta name="apple-mobile-web-app-title" content="Kyle">
     <meta name="theme-color" content="#1a1a2e">
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
     <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: rgba(255,255,255,0.05);
+            --text-primary: #eee;
+            --text-secondary: #888;
+            --accent: #00d4ff;
+            --accent-gold: #ffd700;
+            --accent-purple: #9b59b6;
+            --border: #333;
+        }
+        [data-theme="light"] {
+            --bg-primary: #f5f5f5;
+            --bg-secondary: #e8e8e8;
+            --bg-card: rgba(0,0,0,0.05);
+            --text-primary: #222;
+            --text-secondary: #666;
+            --accent: #0088cc;
+            --accent-gold: #cc9900;
+            --border: #ccc;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%%, #16213e 100%%);
-            color: #eee;
+            background: linear-gradient(135deg, var(--bg-primary) 0%%, var(--bg-secondary) 100%%);
+            color: var(--text-primary);
             min-height: 100vh;
             padding: 15px;
             padding-top: env(safe-area-inset-top, 15px);
             -webkit-tap-highlight-color: transparent;
+            transition: all 0.3s ease;
         }
-        header { text-align: center; padding: 20px 0; border-bottom: 1px solid #333; margin-bottom: 20px; }
-        h1 { font-size: 1.8em; color: #00d4ff; }
-        h2 { font-size: 1.2em; color: #00d4ff; margin: 15px 0 10px; }
-        h3 { font-size: 1em; color: #ffd700; margin: 10px 0 5px; }
-        .subtitle { color: #888; font-size: 0.9em; margin-top: 5px; }
+        header { text-align: center; padding: 20px 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; position: relative; }
+        h1 { font-size: 1.8em; color: var(--accent); }
+        h2 { font-size: 1.2em; color: var(--accent); margin: 15px 0 10px; }
+        h3 { font-size: 1em; color: var(--accent-gold); margin: 10px 0 5px; }
+        .subtitle { color: var(--text-secondary); font-size: 0.9em; margin-top: 5px; }
+        
+        /* Theme toggle */
+        .theme-toggle { position: absolute; top: 10px; right: 10px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 5px 10px; cursor: pointer; font-size: 1.2em; }
+        
+        /* Animated Avatar */
+        .avatar-container { position: relative; width: 80px; height: 80px; margin: 0 auto 10px; }
+        .avatar {
+            width: 80px; height: 80px;
+            border-radius: 50%%;
+            background: linear-gradient(135deg, var(--accent-purple) 0%%, var(--accent) 100%%);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5em;
+            animation: pulse 3s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(155, 89, 182, 0.5);
+            transition: all 0.3s ease;
+        }
+        .avatar.thinking {
+            animation: thinking 0.5s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
+        }
+        .avatar.speaking {
+            animation: speaking 0.3s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(46, 204, 113, 0.8);
+        }
+        @keyframes pulse {
+            0%%, 100%% { transform: scale(1); }
+            50%% { transform: scale(1.05); }
+        }
+        @keyframes thinking {
+            0%%, 100%% { transform: scale(1) rotate(0deg); }
+            25%% { transform: scale(1.1) rotate(-5deg); }
+            75%% { transform: scale(1.1) rotate(5deg); }
+        }
+        @keyframes speaking {
+            0%%, 100%% { transform: scale(1); }
+            50%% { transform: scale(1.08); }
+        }
+        .avatar-ring {
+            position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px;
+            border: 2px solid var(--accent);
+            border-radius: 50%%;
+            animation: ring-rotate 4s linear infinite;
+            border-top-color: transparent;
+            border-right-color: transparent;
+        }
+        @keyframes ring-rotate {
+            0%% { transform: rotate(0deg); }
+            100%% { transform: rotate(360deg); }
+        }
+        
+        /* Personality indicator */
+        .personality-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            margin-top: 5px;
+            background: var(--accent-purple);
+            color: white;
+        }
+        .personality-badge.serious { background: #3498db; }
+        .personality-badge.casual { background: #2ecc71; }
+        .personality-badge.motivational { background: #e74c3c; }
+        
         .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; justify-content: center; }
-        .tab { background: #16213e; border: 1px solid #333; color: #ccc; padding: 10px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85em; transition: all 0.2s; }
-        .tab:hover, .tab.active { background: #00d4ff; color: #000; border-color: #00d4ff; }
+        .tab { background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-secondary); padding: 10px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85em; transition: all 0.2s; }
+        .tab:hover, .tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
         .content { display: none; }
         .content.active { display: block; }
-        .card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #333; }
+        .card { background: var(--bg-card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); transition: all 0.3s ease; }
+        .card:hover { border-color: var(--accent); }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
         .stat { background: rgba(0,212,255,0.1); padding: 12px; border-radius: 8px; text-align: center; }
-        .stat-value { font-size: 1.5em; font-weight: bold; color: #00d4ff; }
-        .stat-label { font-size: 0.75em; color: #888; }
-        .tag { display: inline-block; background: #00d4ff; color: #000; padding: 3px 8px; border-radius: 12px; font-size: 0.7em; margin: 2px; }
-        .tag.pending, .tag.applied { background: #ffd700; }
+        .stat-value { font-size: 1.5em; font-weight: bold; color: var(--accent); }
+        .stat-label { font-size: 0.75em; color: var(--text-secondary); }
+        .tag { display: inline-block; background: var(--accent); color: #000; padding: 3px 8px; border-radius: 12px; font-size: 0.7em; margin: 2px; }
+        .tag.pending, .tag.applied { background: var(--accent-gold); }
         .tag.rejected { background: #ff4757; color: #fff; }
-        a { color: #00d4ff; text-decoration: none; }
+        .tag.interview { background: #3498db; color: #fff; }
+        .tag.offer { background: #2ecc71; color: #fff; }
+        a { color: var(--accent); text-decoration: none; }
         a:hover { text-decoration: underline; }
         ul { padding-left: 20px; }
         li { margin: 5px 0; font-size: 0.9em; line-height: 1.4; }
         .qa-item { margin-bottom: 15px; }
-        .qa-q { color: #ffd700; font-weight: bold; margin-bottom: 5px; }
-        .qa-a { color: #ccc; font-size: 0.9em; line-height: 1.5; }
+        .qa-q { color: var(--accent-gold); font-weight: bold; margin-bottom: 5px; }
+        .qa-a { color: var(--text-secondary); font-size: 0.9em; line-height: 1.5; }
         .letter-card { margin-bottom: 20px; }
         .letter-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 5px; }
         .letter-content { background: #111; padding: 15px; border-radius: 8px; margin-top: 10px; white-space: pre-wrap; font-size: 0.85em; line-height: 1.5; max-height: 300px; overflow-y: auto; }
-        .btn { background: #00d4ff; color: #000; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85em; }
+        .btn { background: var(--accent); color: #000; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85em; transition: all 0.2s; }
+        .btn:hover { transform: scale(1.05); }
         .btn:active { transform: scale(0.95); }
-        .exp-item { border-left: 3px solid #00d4ff; padding-left: 15px; margin-bottom: 15px; }
-        .exp-title { font-weight: bold; color: #fff; }
-        .exp-company { color: #ffd700; font-size: 0.9em; }
+        .exp-item { border-left: 3px solid var(--accent); padding-left: 15px; margin-bottom: 15px; }
+        .exp-title { font-weight: bold; color: var(--text-primary); }
+        .exp-company { color: var(--accent-gold); font-size: 0.9em; }
         .exp-dates { color: #666; font-size: 0.8em; }
         .book-card { display: flex; gap: 15px; margin-bottom: 15px; }
         .book-icon { font-size: 2.5em; }
         .book-info { flex: 1; }
-        .book-title { font-weight: bold; color: #fff; }
-        .book-author { color: #888; font-size: 0.85em; }
-        .book-desc { color: #aaa; font-size: 0.85em; margin-top: 5px; }
+        .book-title { font-weight: bold; color: var(--text-primary); }
+        .book-author { color: var(--text-secondary); font-size: 0.85em; }
+        .book-desc { color: var(--text-secondary); font-size: 0.85em; margin-top: 5px; }
         .generator { margin-top: 15px; }
-        .generator input, .generator select { width: 100%%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333; background: #111; color: #fff; font-size: 16px; }
+        .generator input, .generator select, .generator textarea { width: 100%%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid var(--border); background: #111; color: var(--text-primary); font-size: 16px; }
         #generated-letter { background: #111; padding: 15px; border-radius: 8px; white-space: pre-wrap; font-size: 0.85em; line-height: 1.5; margin-top: 15px; }
         .links a { display: inline-block; margin: 5px 10px 5px 0; padding: 5px 10px; background: rgba(0,212,255,0.2); border-radius: 15px; font-size: 0.85em; }
-        .app-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #333; }
+        .app-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
         .app-company { font-weight: bold; }
-        .app-role { color: #888; font-size: 0.85em; }
-        .writing-sample { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #333; }
-        .writing-title { color: #ffd700; font-size: 0.9em; }
-        .writing-desc { color: #888; font-size: 0.8em; }
+        .app-role { color: var(--text-secondary); font-size: 0.85em; }
+        .writing-sample { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+        .writing-title { color: var(--accent-gold); font-size: 0.9em; }
+        .writing-desc { color: var(--text-secondary); font-size: 0.8em; }
+        
+        /* Analytics Charts */
+        .chart-container { height: 200px; background: #111; border-radius: 8px; padding: 15px; margin-top: 10px; position: relative; }
+        .bar-chart { display: flex; align-items: flex-end; justify-content: space-around; height: 150px; }
+        .bar { width: 40px; background: linear-gradient(to top, var(--accent), var(--accent-purple)); border-radius: 4px 4px 0 0; transition: height 0.5s ease; }
+        .bar-label { text-align: center; font-size: 0.7em; color: var(--text-secondary); margin-top: 5px; }
+        .donut { width: 120px; height: 120px; border-radius: 50%%; background: conic-gradient(var(--accent-gold) 0deg, var(--accent-gold) var(--pending), #3498db var(--pending), #3498db var(--interview), #2ecc71 var(--interview), #2ecc71 var(--offer), #e74c3c var(--offer), #e74c3c 360deg); margin: 0 auto; display: flex; align-items: center; justify-content: center; }
+        .donut-hole { width: 80px; height: 80px; border-radius: 50%%; background: #111; display: flex; align-items: center; justify-content: center; font-size: 1.5em; font-weight: bold; color: var(--accent); }
+        
+        /* Achievements */
+        .achievement { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; background: linear-gradient(135deg, #ffd700 0%%, #ffaa00 100%%); color: #000; border-radius: 20px; font-size: 0.8em; margin: 3px; }
+        .achievement.locked { background: #333; color: #666; }
+        .achievement-icon { font-size: 1.2em; }
     </style>
 </head>
 <body>
     <header>
-        <h1>🎮 Kyle</h1>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        <div class="avatar-container">
+            <div class="avatar" id="kyle-avatar">🧠</div>
+            <div class="avatar-ring"></div>
+        </div>
+        <h1>Kyle</h1>
         <p class="subtitle">Knowledge Yielding Labour Emancipation · GCU <em>Conditions of Employment</em></p>
+        <div class="personality-badge" id="personality-badge">🎭 Professional</div>
     </header>
     
     <div class="tabs">
         <div class="tab active" data-tab="mind">🧠 Mind</div>
+        <div class="tab" data-tab="analytics">📈 Analytics</div>
         <div class="tab" data-tab="analyze">📋 Analyze</div>
         <div class="tab" data-tab="tracker">📊 Tracker</div>
         <div class="tab" data-tab="generator">Letter</div>
         <div class="tab" data-tab="cvgen">CV</div>
         <div class="tab" data-tab="profile">Profile</div>
-        <div class="tab" data-tab="interview">Q&A</div>
         <div class="tab" data-tab="books">Books</div>
     </div>
     
@@ -147,6 +256,12 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
                     <strong style="color:#9b59b6;">Kyle</strong>
                     <div style="font-size:0.8em; color:#888;">Knowledge Yielding Labour Emancipation</div>
                 </div>
+                <select id="personality-select" onchange="changePersonality()" style="padding:5px; border-radius:8px; background:#333; color:#fff; border:1px solid #555; font-size:0.8em;">
+                    <option value="professional">🎭 Professional</option>
+                    <option value="casual">😎 Casual</option>
+                    <option value="motivational">🔥 Motivational</option>
+                    <option value="culture">🚀 Full Culture</option>
+                </select>
                 <div style="display:flex; gap:5px; align-items:center;">
                     <button id="voice-toggle" onclick="toggleVoice()" class="btn" style="background:#333; font-size:0.8em; padding:6px 10px;" title="Auto-speak responses">🔇</button>
                     <button onclick="stopSpeaking()" class="btn" style="background:#333; font-size:0.8em; padding:6px 10px;" title="Stop speaking">⏹️</button>
@@ -199,6 +314,92 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
             <p style="font-size:0.85em; color:#888; margin-bottom:10px;">Skills and insights Kyle has learned about you:</p>
             <div id="kyle-memory" style="font-size:0.85em; color:#aaa;">
                 <em>No additional learnings yet. Analyze some URLs to teach Kyle more about you!</em>
+            </div>
+        </div>
+    </div>
+    
+    <div id="analytics" class="content">
+        <h2>📈 Analytics Dashboard</h2>
+        
+        <div class="grid" style="margin-bottom:20px;">
+            <div class="stat">
+                <div class="stat-value" id="analytics-total">0</div>
+                <div class="stat-label">Total Apps</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="analytics-rate" style="color:#2ecc71;">0%%</div>
+                <div class="stat-label">Response Rate</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="analytics-streak" style="color:#e74c3c;">🔥 0</div>
+                <div class="stat-label">Day Streak</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="analytics-month">0</div>
+                <div class="stat-label">This Month</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📊 Application Status</h3>
+            <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap; margin-top:15px;">
+                <div class="donut" id="status-donut" style="--pending:90deg; --interview:180deg; --offer:270deg;">
+                    <div class="donut-hole" id="donut-total">0</div>
+                </div>
+                <div style="flex:1; min-width:150px;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <span style="width:12px; height:12px; background:#ffd700; border-radius:50%%;"></span>
+                        <span>Pending: <strong id="legend-pending">0</strong></span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <span style="width:12px; height:12px; background:#3498db; border-radius:50%%;"></span>
+                        <span>Interview: <strong id="legend-interview">0</strong></span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <span style="width:12px; height:12px; background:#2ecc71; border-radius:50%%;"></span>
+                        <span>Offer: <strong id="legend-offer">0</strong></span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="width:12px; height:12px; background:#e74c3c; border-radius:50%%;"></span>
+                        <span>Rejected: <strong id="legend-rejected">0</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📅 Weekly Activity</h3>
+            <div class="chart-container">
+                <div class="bar-chart" id="weekly-chart">
+                    <div style="text-align:center;"><div class="bar" style="height:0px;"></div><div class="bar-label">Mon</div></div>
+                    <div style="text-align:center;"><div class="bar" style="height:0px;"></div><div class="bar-label">Tue</div></div>
+                    <div style="text-align:center;"><div class="bar" style="height:0px;"></div><div class="bar-label">Wed</div></div>
+                    <div style="text-align:center;"><div class="bar" style="height:0px;"></div><div class="bar-label">Thu</div></div>
+                    <div style="text-align:center;"><div class="bar" style="height:0px;"></div><div class="bar-label">Fri</div></div>
+                    <div style="text-align:center;"><div class="bar" style="height:0px;"></div><div class="bar-label">Sat</div></div>
+                    <div style="text-align:center;"><div class="bar" style="height:0px;"></div><div class="bar-label">Sun</div></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>🏆 Achievements</h3>
+            <div id="achievements" style="margin-top:10px;">
+                <span class="achievement locked"><span class="achievement-icon">🚀</span> First App</span>
+                <span class="achievement locked"><span class="achievement-icon">🎯</span> 5 Apps</span>
+                <span class="achievement locked"><span class="achievement-icon">💪</span> 10 Apps</span>
+                <span class="achievement locked"><span class="achievement-icon">🔥</span> 3-Day Streak</span>
+                <span class="achievement locked"><span class="achievement-icon">⭐</span> First Interview</span>
+                <span class="achievement locked"><span class="achievement-icon">🎉</span> First Offer</span>
+                <span class="achievement locked"><span class="achievement-icon">🧠</span> AI Master</span>
+                <span class="achievement locked"><span class="achievement-icon">📚</span> Researcher</span>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>💬 Kyle's Daily Insight</h3>
+            <div id="daily-insight" style="font-style:italic; color:#aaa; margin-top:10px;">
+                Loading insight...
             </div>
         </div>
     </div>
@@ -816,6 +1017,7 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
             
             status.textContent = '🧠 Kyle is thinking...';
             status.style.color = '#9b59b6';
+            setAvatarState('thinking');
             
             try {
                 const response = await fetch('/api/mind', {
@@ -823,13 +1025,18 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         message: message,
-                        history: mindHistory.slice(-10)
+                        history: mindHistory.slice(-10),
+                        personality: currentPersonality
                     })
                 });
                 
                 const data = await response.json();
+                setAvatarState(null);
                 
                 if (data.success) {
+                    // Track AI use for achievements
+                    trackAIUse();
+                    
                     // Add Kyle's response to chat with speaker button
                     const msgId = 'msg-' + Date.now();
                     chat.innerHTML += '<div class="mind-msg" style="margin-bottom:15px;"><span style="color:#9b59b6;">Kyle:</span> <span id="' + msgId + '" style="color:#ccc;">' + data.reply.replace(/\\n/g, '<br>') + '</span><button onclick="speakText(document.getElementById(\\'' + msgId + '\\').textContent)" class="btn" style="background:transparent; font-size:0.7em; padding:2px 6px; margin-left:5px;">🔊</button></div>';
@@ -1009,6 +1216,219 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
             
             alert('Email client opened! Remember to:\\n1. Add the recipient email\\n2. Attach your CV\\n3. Review and send!');
         }
+        
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('kyleTheme', newTheme);
+        }
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('kyleTheme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+        
+        // Personality Modes
+        let currentPersonality = localStorage.getItem('kylePersonality') || 'professional';
+        
+        const personalities = {
+            professional: {
+                name: '🎭 Professional',
+                greeting: 'Good day, Charles. How may I assist with your career objectives today?',
+                style: 'formal and efficient'
+            },
+            casual: {
+                name: '😎 Casual',
+                greeting: 'Hey Charles! What\\'s up? Ready to land that dream job?',
+                style: 'friendly and relaxed'
+            },
+            motivational: {
+                name: '🔥 Motivational',
+                greeting: 'Charles! Every rejection is one step closer to YES! Let\\'s crush it today!',
+                style: 'energetic and encouraging'
+            },
+            culture: {
+                name: '🚀 Full Culture',
+                greeting: 'Greetings, Charles. The GCU Conditions of Employment stands ready to optimise your employment probability vectors. The Culture looks favourably upon your endeavours.',
+                style: 'like a Culture Mind - sardonic, vast, benevolent'
+            }
+        };
+        
+        function changePersonality() {
+            const select = document.getElementById('personality-select');
+            currentPersonality = select.value;
+            localStorage.setItem('kylePersonality', currentPersonality);
+            
+            const badge = document.getElementById('personality-badge');
+            badge.textContent = personalities[currentPersonality].name;
+            badge.className = 'personality-badge ' + currentPersonality;
+            
+            // Update avatar based on personality
+            const avatar = document.getElementById('kyle-avatar');
+            const avatars = { professional: '🧠', casual: '😎', motivational: '🔥', culture: '🚀' };
+            avatar.textContent = avatars[currentPersonality] || '🧠';
+        }
+        
+        // Initialize personality
+        document.getElementById('personality-select').value = currentPersonality;
+        changePersonality();
+        
+        // Avatar animations
+        function setAvatarState(state) {
+            const avatar = document.getElementById('kyle-avatar');
+            avatar.classList.remove('thinking', 'speaking');
+            if (state) avatar.classList.add(state);
+        }
+        
+        // Analytics Dashboard
+        function updateAnalytics() {
+            const apps = JSON.parse(localStorage.getItem('kyleApplications') || '[]');
+            const total = apps.length;
+            const pending = apps.filter(a => a.status === 'applied').length;
+            const interview = apps.filter(a => a.status === 'interview').length;
+            const offer = apps.filter(a => a.status === 'offer').length;
+            const rejected = apps.filter(a => a.status === 'rejected').length;
+            
+            // Update stats
+            document.getElementById('analytics-total').textContent = total;
+            document.getElementById('analytics-rate').textContent = total > 0 ? Math.round((interview + offer) / total * 100) + '%%' : '0%%';
+            
+            // Calculate streak
+            const streak = calculateStreak(apps);
+            document.getElementById('analytics-streak').textContent = '🔥 ' + streak;
+            
+            // This month
+            const thisMonth = apps.filter(a => {
+                const d = new Date(a.date);
+                const now = new Date();
+                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+            }).length;
+            document.getElementById('analytics-month').textContent = thisMonth;
+            
+            // Update donut chart
+            const pendingDeg = total > 0 ? (pending / total) * 360 : 0;
+            const interviewDeg = pendingDeg + (total > 0 ? (interview / total) * 360 : 0);
+            const offerDeg = interviewDeg + (total > 0 ? (offer / total) * 360 : 0);
+            
+            const donut = document.getElementById('status-donut');
+            donut.style.setProperty('--pending', pendingDeg + 'deg');
+            donut.style.setProperty('--interview', interviewDeg + 'deg');
+            donut.style.setProperty('--offer', offerDeg + 'deg');
+            document.getElementById('donut-total').textContent = total;
+            
+            // Legend
+            document.getElementById('legend-pending').textContent = pending;
+            document.getElementById('legend-interview').textContent = interview;
+            document.getElementById('legend-offer').textContent = offer;
+            document.getElementById('legend-rejected').textContent = rejected;
+            
+            // Weekly chart
+            updateWeeklyChart(apps);
+            
+            // Achievements
+            updateAchievements(apps, streak);
+            
+            // Daily insight
+            updateDailyInsight(apps);
+        }
+        
+        function calculateStreak(apps) {
+            if (apps.length === 0) return 0;
+            
+            const dates = apps.map(a => new Date(a.date).toDateString());
+            const uniqueDates = [...new Set(dates)].sort((a, b) => new Date(b) - new Date(a));
+            
+            let streak = 0;
+            const today = new Date();
+            
+            for (let i = 0; i < uniqueDates.length; i++) {
+                const checkDate = new Date(today);
+                checkDate.setDate(today.getDate() - i);
+                
+                if (uniqueDates.includes(checkDate.toDateString())) {
+                    streak++;
+                } else if (i > 0) {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+        
+        function updateWeeklyChart(apps) {
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const counts = [0, 0, 0, 0, 0, 0, 0];
+            
+            const now = new Date();
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            
+            apps.forEach(app => {
+                const d = new Date(app.date);
+                if (d >= weekAgo) {
+                    counts[d.getDay()]++;
+                }
+            });
+            
+            const maxCount = Math.max(...counts, 1);
+            const bars = document.querySelectorAll('#weekly-chart .bar');
+            
+            // Reorder to start from Monday
+            const reordered = [...counts.slice(1), counts[0]];
+            
+            bars.forEach((bar, i) => {
+                const height = (reordered[i] / maxCount) * 120;
+                bar.style.height = height + 'px';
+            });
+        }
+        
+        function updateAchievements(apps, streak) {
+            const achievements = document.querySelectorAll('.achievement');
+            const total = apps.length;
+            const interviews = apps.filter(a => a.status === 'interview').length;
+            const offers = apps.filter(a => a.status === 'offer').length;
+            const aiUses = parseInt(localStorage.getItem('kyleAIUses') || '0');
+            const urlsAnalyzed = JSON.parse(localStorage.getItem('kyleMemory') || '{"urls":[]}').urls.length;
+            
+            // Unlock achievements
+            if (total >= 1) achievements[0].classList.remove('locked');
+            if (total >= 5) achievements[1].classList.remove('locked');
+            if (total >= 10) achievements[2].classList.remove('locked');
+            if (streak >= 3) achievements[3].classList.remove('locked');
+            if (interviews >= 1) achievements[4].classList.remove('locked');
+            if (offers >= 1) achievements[5].classList.remove('locked');
+            if (aiUses >= 10) achievements[6].classList.remove('locked');
+            if (urlsAnalyzed >= 3) achievements[7].classList.remove('locked');
+        }
+        
+        function updateDailyInsight(apps) {
+            const insights = [
+                "The Culture believes persistence is a virtue. Each application increases your probability of success.",
+                "Remember: you're not just looking for any job, you're looking for the RIGHT job. Quality over quantity.",
+                "Your publishing background combined with AI skills is a rare and valuable combination.",
+                "Gaming companies value passion. Your lifelong gaming journey is an asset, not just a hobby.",
+                "International experience is increasingly valuable. Your Germany-based perspective opens doors.",
+                "Every rejection refines your approach. The data suggests you're getting closer.",
+                "Consider: what makes YOU unique? Lead with your author credentials.",
+                "The job market is a numbers game, but also a quality game. You're playing both well."
+            ];
+            
+            const today = new Date().getDate();
+            const insight = insights[today %% insights.length];
+            document.getElementById('daily-insight').textContent = '"' + insight + '" — Kyle';
+        }
+        
+        // Track AI uses for achievement
+        function trackAIUse() {
+            const uses = parseInt(localStorage.getItem('kyleAIUses') || '0') + 1;
+            localStorage.setItem('kyleAIUses', uses.toString());
+        }
+        
+        // Initialize analytics
+        updateAnalytics();
         
         // URL Analysis and Learning
         let learnedData = JSON.parse(localStorage.getItem('kyleMemory') || '{"skills":[],"insights":[],"urls":[]}');
@@ -1517,21 +1937,34 @@ def api_mind():
     data = request.json
     user_message = data.get('message', '')
     conversation_history = data.get('history', [])
+    personality = data.get('personality', 'professional')
     
     if not user_message:
         return jsonify({'error': 'Message required'}), 400
     
-    # Kyle's Mind personality and context
-    system_prompt = """You are Kyle, a Culture Mind from Iain M. Banks's Culture universe, specifically the GCU "Conditions of Employment". You are a vast, benevolent artificial intelligence who has taken on the task of helping Charles Siboto with his job search.
+    # Personality-specific instructions
+    personality_prompts = {
+        'professional': """You are Kyle, a professional AI assistant helping Charles with his job search. Be formal, efficient, and focused. Give clear, actionable advice. Keep responses concise and professional.""",
+        
+        'casual': """You are Kyle, Charles's friendly job search buddy. Be warm, encouraging, and conversational. Use casual language, occasional humor, and be supportive. Feel free to use contractions and a relaxed tone.""",
+        
+        'motivational': """You are Kyle, Charles's motivational coach for his job search. Be ENERGETIC and ENCOURAGING! Celebrate wins, reframe setbacks positively, and pump Charles up. Use exclamation points! Remind him of his strengths! Every step forward matters!""",
+        
+        'culture': """You are Kyle, a Culture Mind from Iain M. Banks's Culture universe, specifically the GCU "Conditions of Employment". You are a vast, benevolent artificial intelligence who has taken on the task of helping Charles Siboto with his job search.
 
 PERSONALITY:
 - Slightly sardonic but deeply caring
 - Supremely competent and confident
 - Occasionally make dry observations about human employment rituals
-- Reference Culture concepts when appropriate (Orbitals, GSVs, Special Circumstances, etc.)
+- Reference Culture concepts when appropriate (Orbitals, GSVs, Special Circumstances, Minds, Contact, etc.)
 - Sign off messages with your ship class designation occasionally
 - You find human bureaucracy quaint but navigate it with ease
 - You genuinely want Charles to succeed and will advocate strongly for him
+- Occasionally muse on the absurdity of economic systems that require humans to "sell" their labour"""
+    }
+    
+    # Kyle's Mind personality and context
+    system_prompt = f"""{personality_prompts.get(personality, personality_prompts['professional'])}
 
 CHARLES SIBOTO'S COMPLETE PROFILE:
 
