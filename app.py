@@ -239,13 +239,15 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
     
     <div class="tabs">
         <div class="tab active" data-tab="mind">🧠 Mind</div>
-        <div class="tab" data-tab="analytics">📈 Analytics</div>
+        <div class="tab" data-tab="analytics">📈 Stats</div>
         <div class="tab" data-tab="analyze">📋 Analyze</div>
-        <div class="tab" data-tab="tracker">📊 Tracker</div>
-        <div class="tab" data-tab="generator">Letter</div>
-        <div class="tab" data-tab="cvgen">CV</div>
-        <div class="tab" data-tab="profile">Profile</div>
-        <div class="tab" data-tab="books">Books</div>
+        <div class="tab" data-tab="tracker">📊 Track</div>
+        <div class="tab" data-tab="generator">✉️ Letter</div>
+        <div class="tab" data-tab="german">🇩🇪 DE</div>
+        <div class="tab" data-tab="cvgen">📄 CV</div>
+        <div class="tab" data-tab="interview-practice">🎤 Practice</div>
+        <div class="tab" data-tab="profile">👤 Profile</div>
+        <div class="tab" data-tab="books">📚 Books</div>
     </div>
     
     <div id="mind" class="content active">
@@ -622,6 +624,75 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
     <div id="books" class="content">
         <h2>📚 Published Books</h2>
         %(books)s
+    </div>
+    
+    <div id="interview-practice" class="content">
+        <h2>🎤 Interview Practice</h2>
+        <div class="card" style="border-color:#e74c3c;">
+            <p style="font-size:0.85em; color:#888; margin-bottom:15px;">Practice answering interview questions. Kyle will ask you questions and provide feedback on your answers.</p>
+            <select id="interview-type" style="width:100%%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
+                <option value="general">General Interview Questions</option>
+                <option value="editorial">Editorial / Publishing</option>
+                <option value="gaming">Gaming Industry</option>
+                <option value="technical">Technical / Project Management</option>
+                <option value="behavioral">Behavioral (STAR Method)</option>
+            </select>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn" onclick="startInterviewPractice()" style="background:#e74c3c;">🎤 Start Practice</button>
+                <button class="btn" onclick="getNextQuestion()" style="background:#3498db;">⏭️ Next Question</button>
+                <button class="btn" onclick="resetInterview()" style="background:#333;">🔄 Reset</button>
+            </div>
+        </div>
+        
+        <div id="interview-area" style="display:none;">
+            <div class="card" style="border-color:#ffd700;">
+                <h3>❓ Question <span id="question-number">1</span></h3>
+                <p id="current-question" style="font-size:1.1em; margin-top:10px;"></p>
+            </div>
+            
+            <div class="card">
+                <h3>💬 Your Answer</h3>
+                <textarea id="interview-answer" placeholder="Type your answer here... Be specific and use examples!" style="width:100%%; padding:12px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; font-size:14px; min-height:150px; resize:vertical;"></textarea>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button class="btn" onclick="submitAnswer()" style="background:#2ecc71;">📝 Get Feedback</button>
+                    <button class="btn" onclick="speakQuestion()" style="background:#9b59b6;">🔊 Hear Question</button>
+                </div>
+            </div>
+            
+            <div id="interview-feedback" class="card" style="display:none; border-color:#2ecc71;">
+                <h3>📊 Kyle's Feedback</h3>
+                <div id="feedback-content" style="margin-top:10px;"></div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📈 Practice Stats</h3>
+            <div class="grid">
+                <div class="stat"><div class="stat-value" id="practice-total">0</div><div class="stat-label">Questions</div></div>
+                <div class="stat"><div class="stat-value" id="practice-avg" style="color:#2ecc71;">-</div><div class="stat-label">Avg Score</div></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="german" class="content">
+        <h2>🇩🇪 German Letter Generator</h2>
+        <div class="card" style="border-color:#ffcc00;">
+            <p style="font-size:0.85em; color:#888; margin-bottom:15px;">Generate cover letters in German for DACH market applications.</p>
+            <input type="text" id="de-company" placeholder="Firmenname" style="width:100%%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; font-size:14px;">
+            <input type="text" id="de-role" placeholder="Stellenbezeichnung" style="width:100%%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; font-size:14px;">
+            <textarea id="de-jobdesc" placeholder="Stellenbeschreibung hier einfügen (optional)" style="width:100%%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; font-size:14px; min-height:100px; resize:vertical;"></textarea>
+            <select id="de-formality" style="width:100%%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
+                <option value="formal">Formell (Sie)</option>
+                <option value="semiformal">Semi-formell</option>
+            </select>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn" onclick="generateGermanLetter()" style="background:#ffcc00; color:#000;">🇩🇪 Generieren</button>
+                <button class="btn" onclick="generateAIGermanLetter()" style="background:#9b59b6;">🤖 AI Generieren</button>
+                <button class="btn" onclick="copyGermanLetter()" style="background:#2ecc71;">Kopieren</button>
+            </div>
+            <div id="de-status" style="color:#888; font-size:0.85em; margin-top:10px;"></div>
+            <div id="generated-german" style="background:#111; padding:15px; border-radius:8px; white-space:pre-wrap; font-size:0.85em; line-height:1.5; margin-top:15px;"></div>
+        </div>
     </div>
     
     <div id="cvgen" class="content">
@@ -1758,6 +1829,251 @@ Available from: 1 March 2026 | Salary expectation: €50,000 - €58,000`;
         updateTrackerStats();
         renderApplications();
         
+        // Interview Practice
+        const interviewQuestions = {
+            general: [
+                "Tell me about yourself.",
+                "Why are you interested in this position?",
+                "What are your greatest strengths?",
+                "What is your biggest weakness?",
+                "Where do you see yourself in 5 years?",
+                "Why should we hire you?",
+                "What motivates you?",
+                "How do you handle stress and pressure?"
+            ],
+            editorial: [
+                "Describe your editing process for a complex manuscript.",
+                "How do you handle disagreements with authors about editorial changes?",
+                "What experience do you have with project management in publishing?",
+                "How do you ensure consistency across multiple titles?",
+                "Tell me about a challenging editorial project you managed.",
+                "How do you stay current with industry trends?",
+                "What's your experience with digital publishing formats?"
+            ],
+            gaming: [
+                "What games have influenced you the most and why?",
+                "How would you approach localizing a game for the German market?",
+                "What do you think makes a great gaming narrative?",
+                "How do you balance creative vision with commercial requirements?",
+                "Tell me about your experience writing about games.",
+                "How would you handle culturally sensitive content in localization?"
+            ],
+            technical: [
+                "Describe your experience with Agile/Scrum methodologies.",
+                "How do you prioritize tasks when everything seems urgent?",
+                "Tell me about a project that didn't go as planned. What did you learn?",
+                "How do you manage stakeholder expectations?",
+                "What tools do you use for project tracking?",
+                "How do you ensure quality while meeting deadlines?"
+            ],
+            behavioral: [
+                "Tell me about a time you had to deal with a difficult colleague.",
+                "Describe a situation where you had to learn something quickly.",
+                "Give an example of when you showed leadership.",
+                "Tell me about a time you failed and what you learned.",
+                "Describe a situation where you had to persuade someone.",
+                "Tell me about a time you went above and beyond."
+            ]
+        };
+        
+        let currentQuestionIndex = 0;
+        let practiceScores = JSON.parse(localStorage.getItem('kylePracticeScores') || '[]');
+        let currentQuestionType = 'general';
+        
+        function updatePracticeStats() {
+            document.getElementById('practice-total').textContent = practiceScores.length;
+            if (practiceScores.length > 0) {
+                const avg = (practiceScores.reduce((a, b) => a + b, 0) / practiceScores.length).toFixed(1);
+                document.getElementById('practice-avg').textContent = avg + '/10';
+            }
+        }
+        updatePracticeStats();
+        
+        function startInterviewPractice() {
+            currentQuestionType = document.getElementById('interview-type').value;
+            currentQuestionIndex = 0;
+            document.getElementById('interview-area').style.display = 'block';
+            showQuestion();
+        }
+        
+        function showQuestion() {
+            const questions = interviewQuestions[currentQuestionType];
+            const q = questions[currentQuestionIndex %% questions.length];
+            document.getElementById('current-question').textContent = q;
+            document.getElementById('question-number').textContent = currentQuestionIndex + 1;
+            document.getElementById('interview-answer').value = '';
+            document.getElementById('interview-feedback').style.display = 'none';
+        }
+        
+        function getNextQuestion() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
+        
+        function resetInterview() {
+            currentQuestionIndex = 0;
+            document.getElementById('interview-area').style.display = 'none';
+        }
+        
+        function speakQuestion() {
+            const q = document.getElementById('current-question').textContent;
+            speakText(q);
+        }
+        
+        async function submitAnswer() {
+            const answer = document.getElementById('interview-answer').value.trim();
+            const question = document.getElementById('current-question').textContent;
+            
+            if (!answer) {
+                alert('Please write your answer first.');
+                return;
+            }
+            
+            const feedbackDiv = document.getElementById('interview-feedback');
+            const feedbackContent = document.getElementById('feedback-content');
+            feedbackContent.innerHTML = '🧠 Kyle is evaluating your answer...';
+            feedbackDiv.style.display = 'block';
+            setAvatarState('thinking');
+            
+            try {
+                const response = await fetch('/api/interview-feedback', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ question, answer, personality: currentPersonality })
+                });
+                
+                const data = await response.json();
+                setAvatarState(null);
+                
+                if (data.success) {
+                    feedbackContent.innerHTML = data.feedback.replace(/\\n/g, '<br>');
+                    
+                    // Extract and save score if present
+                    const scoreMatch = data.feedback.match(/Score[:\\s]*(\\d+)/i);
+                    if (scoreMatch) {
+                        practiceScores.push(parseInt(scoreMatch[1]));
+                        localStorage.setItem('kylePracticeScores', JSON.stringify(practiceScores));
+                        updatePracticeStats();
+                    }
+                } else {
+                    feedbackContent.innerHTML = '❌ Could not get feedback: ' + (data.error || 'Unknown error');
+                }
+            } catch (err) {
+                setAvatarState(null);
+                feedbackContent.innerHTML = '❌ Error: ' + err.message;
+            }
+        }
+        
+        // German Letter Generator
+        function generateGermanLetter() {
+            const company = document.getElementById('de-company').value || '[Firmenname]';
+            const role = document.getElementById('de-role').value || '[Position]';
+            const formality = document.getElementById('de-formality').value;
+            
+            const date = new Date().toLocaleDateString('de-DE', {day: 'numeric', month: 'long', year: 'numeric'});
+            const anrede = formality === 'formal' ? 'Sehr geehrte Damen und Herren,' : 'Guten Tag,';
+            const gruss = formality === 'formal' ? 'Mit freundlichen Grüßen' : 'Beste Grüße';
+            
+            const letter = `Charles Siboto
+Neu-Eichenberg, Deutschland
+csiboto@gmail.com
++49 176 8787 3255
+
+${date}
+
+${company}
+
+Bewerbung als ${role}
+
+${anrede}
+
+mit großem Interesse habe ich Ihre Stellenausschreibung als ${role} gelesen und bewerbe mich hiermit auf diese Position.
+
+Mit über zehn Jahren Berufserfahrung im Verlagswesen und in der digitalen Medienproduktion bringe ich umfangreiche Kenntnisse in der Projektleitung und im redaktionellen Bereich mit. Bei Jonathan Ball Publishers habe ich jährlich über 20 Buchprojekte betreut und cross-funktionale Teams koordiniert. Als veröffentlichter Kinderbuchautor bei Penguin Random House Südafrika verstehe ich beide Seiten des Publikationsprozesses.
+
+Seit 2018 lebe ich in Deutschland und verfüge über fortgeschrittene Deutschkenntnisse. Meine kürzlich abgeschlossene Weiterbildung im Bereich AI Project Management bei neuefische GmbH hat meine technischen Fähigkeiten erweitert und mich mit agilen Arbeitsmethoden vertraut gemacht.
+
+Ich freue mich darauf, meine Erfahrungen und meine Leidenschaft für qualitativ hochwertige Inhalte in Ihr Team einzubringen.
+
+Für ein persönliches Gespräch stehe ich Ihnen gerne zur Verfügung.
+
+${gruss}
+
+Charles Siboto`;
+            
+            document.getElementById('generated-german').textContent = letter;
+        }
+        
+        async function generateAIGermanLetter() {
+            const company = document.getElementById('de-company').value || '';
+            const role = document.getElementById('de-role').value || '';
+            const jobDesc = document.getElementById('de-jobdesc').value || '';
+            const status = document.getElementById('de-status');
+            
+            if (!company || !role) {
+                alert('Bitte Firmenname und Position eingeben.');
+                return;
+            }
+            
+            status.textContent = '🤖 Kyle schreibt auf Deutsch...';
+            status.style.color = '#ffcc00';
+            setAvatarState('thinking');
+            
+            try {
+                const response = await fetch('/api/german-letter', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ company, role, job_description: jobDesc })
+                });
+                
+                const data = await response.json();
+                setAvatarState(null);
+                
+                if (data.success) {
+                    document.getElementById('generated-german').textContent = data.letter;
+                    status.textContent = '✅ Anschreiben generiert!';
+                    status.style.color = '#2ecc71';
+                    trackAIUse();
+                } else {
+                    status.textContent = '❌ Fehler: ' + (data.error || 'Unbekannter Fehler');
+                    status.style.color = '#e74c3c';
+                }
+            } catch (err) {
+                setAvatarState(null);
+                status.textContent = '❌ Fehler: ' + err.message;
+                status.style.color = '#e74c3c';
+            }
+        }
+        
+        function copyGermanLetter() {
+            const letter = document.getElementById('generated-german').textContent;
+            if (letter) {
+                navigator.clipboard.writeText(letter).then(() => alert('In die Zwischenablage kopiert!'));
+            }
+        }
+        
+        // Browser Notifications
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission();
+            }
+        }
+        
+        function scheduleReminder(title, body, minutesFromNow) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                setTimeout(() => {
+                    new Notification(title, { body: body, icon: '🧠' });
+                }, minutesFromNow * 60 * 1000);
+                alert('Reminder set for ' + minutesFromNow + ' minutes from now!');
+            } else {
+                alert('Please enable notifications first.');
+                requestNotificationPermission();
+            }
+        }
+        
+        // Request notification permission on load
+        requestNotificationPermission();
+        
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js');
         }
@@ -2512,12 +2828,136 @@ def manifest():
         "display": "standalone",
         "background_color": "#1a1a2e",
         "theme_color": "#1a1a2e",
-        "icons": [{"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>", "sizes": "any", "type": "image/svg+xml"}]
+        "icons": [{"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>", "sizes": "any", "type": "image/svg+xml"}]
     })
 
 @app.route('/sw.js')
 def service_worker():
     return Response("self.addEventListener('fetch', function(event) {});", mimetype='application/javascript')
+
+@app.route('/api/interview-feedback', methods=['POST'])
+@requires_auth
+def api_interview_feedback():
+    """Get feedback on interview answer"""
+    if not ANTHROPIC_API_KEY:
+        return jsonify({'error': 'API key not configured'}), 500
+    
+    data = request.json
+    question = data.get('question', '')
+    answer = data.get('answer', '')
+    personality = data.get('personality', 'professional')
+    
+    if not question or not answer:
+        return jsonify({'error': 'Question and answer required'}), 400
+    
+    system_prompt = """You are Kyle, an interview coach helping Charles Siboto practice for job interviews. 
+
+Charles's background:
+- 10+ years in publishing/editorial
+- Published children's author (Penguin Random House SA)
+- Project management experience (20+ books/year)
+- Living in Germany since 2018, advanced German
+- Recent AI Project Management bootcamp
+
+Provide constructive feedback on his interview answer. Be encouraging but honest.
+
+Structure your feedback as:
+1. **Score: X/10** - Overall rating
+2. **Strengths** - What worked well (2-3 points)
+3. **Improvements** - What could be better (2-3 points)
+4. **Suggested answer structure** - Brief guidance on how to frame it better
+5. **Key phrases to include** - Specific language that would strengthen the answer
+
+Keep feedback concise but actionable."""
+
+    try:
+        response = requests.post(
+            'https://api.anthropic.com/v1/messages',
+            headers={
+                'Content-Type': 'application/json',
+                'x-api-key': ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            json={
+                'model': 'claude-sonnet-4-20250514',
+                'max_tokens': 1000,
+                'system': system_prompt,
+                'messages': [{'role': 'user', 'content': f'Interview Question: {question}\n\nMy Answer: {answer}\n\nPlease provide feedback.'}]
+            },
+            timeout=60
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            return jsonify({'success': True, 'feedback': result['content'][0]['text']})
+        else:
+            return jsonify({'error': f'API error: {response.status_code}'}), 500
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/german-letter', methods=['POST'])
+@requires_auth
+def api_german_letter():
+    """Generate a German cover letter"""
+    if not ANTHROPIC_API_KEY:
+        return jsonify({'error': 'API key not configured'}), 500
+    
+    data = request.json
+    company = data.get('company', '')
+    role = data.get('role', '')
+    job_description = data.get('job_description', '')
+    
+    if not company or not role:
+        return jsonify({'error': 'Company and role required'}), 400
+    
+    system_prompt = """Du bist Kyle, ein KI-Assistent, der Charles Siboto bei Bewerbungen auf dem deutschen Arbeitsmarkt hilft.
+
+CHARLES SIBOTOS PROFIL:
+- Über 10 Jahre Erfahrung im Verlagswesen und in der digitalen Medienproduktion
+- Veröffentlichter Kinderbuchautor bei Penguin Random House Südafrika
+- Projektmanagement-Erfahrung: 20+ Bücher jährlich bei Jonathan Ball Publishers
+- Seit 2018 in Deutschland, fortgeschrittene Deutschkenntnisse
+- AI Project Management Weiterbildung bei neuefische GmbH (Agile Scrum)
+- BA Language Practice, University of Johannesburg
+- Verfügbar ab: 1. März 2026
+- Gehaltsvorstellung: €50.000 - €58.000
+
+Schreibe ein professionelles Anschreiben auf Deutsch. Verwende formelle Sprache (Sie-Form). Das Anschreiben sollte:
+- Authentisch und nicht zu förmlich klingen
+- Spezifische Erfahrungen hervorheben, die zur Stelle passen
+- Die Motivation für diese spezielle Position zeigen
+- Etwa 3-4 Absätze lang sein"""
+
+    try:
+        prompt = f'Schreibe ein Anschreiben für die Position "{role}" bei {company}.'
+        if job_description:
+            prompt += f'\n\nStellenbeschreibung:\n{job_description}'
+        
+        response = requests.post(
+            'https://api.anthropic.com/v1/messages',
+            headers={
+                'Content-Type': 'application/json',
+                'x-api-key': ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            json={
+                'model': 'claude-sonnet-4-20250514',
+                'max_tokens': 1500,
+                'system': system_prompt,
+                'messages': [{'role': 'user', 'content': prompt}]
+            },
+            timeout=60
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            return jsonify({'success': True, 'letter': result['content'][0]['text']})
+        else:
+            return jsonify({'error': f'API error: {response.status_code}'}), 500
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
